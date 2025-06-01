@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "httpayer"
+version = "0.1.0"
+description = "Python Library for HttPayer Server"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+
+authors = [
+    { name = "Brandyn Hamilton", email = "brandynham1120@gmail.com"}
+]
+
+dependencies = [
+    "pandas",
+    "numpy",
+    "python-dotenv",
+    "flask[async]",
+    "web3",
+    "diskcache>=5.6.3",
+    "click",
+]
+
+[tool.setuptools.packages.find]
+include = ["chainsettle", "chainsettle.*"]
