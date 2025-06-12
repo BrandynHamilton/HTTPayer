@@ -1,6 +1,7 @@
 *.env
 *.venv
 *.egg-info
-__pycache__/
+backend/__pycache__/
 backend/tests/node_modules
+backend/node_modules
 

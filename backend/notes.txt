@@ -1,0 +1,33 @@
+npx ts-node src/server.ts
+
+npx tsc
+
+- From backend/ dir
+
+npm install
+
+npm run dev           # server.ts
+npm run dev:demo      # demoServer.ts
+npm run build         # compiles all to /dist
+npm start             # runs dist/server.js
+
+# Demo Server
+node dist/demoServer.js
+
+# Pay Server
+node dist/server.js or npm start
+
+# CCIP-Terminal Server
+uv run python ccip/main.py
+
+# Curl 
+curl -X GET http://localhost:5089/balances
+
+# Docker
+
+Build the image
+docker build -t httpayer-app .
+
+Run the container
+docker run -p 3000:3000 -p 5089:5089 -p 4021:4021 --env-file .env httpayer-app
+

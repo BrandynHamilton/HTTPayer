@@ -21,3 +21,4 @@ paid_get = wrap_request_with_payment(
 # Then use paid_get exactly like requests.get:
 resp = paid_get("http://localhost:4021/weather")
 print(resp.status_code, resp.json())
+
