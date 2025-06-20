@@ -10,7 +10,6 @@ from ccip_terminal.notifications import send_email_notification
 from ccip_terminal.logger import logger
 from ccip_terminal.wallet import generate_wallet, save_to_env, encrypt_keystore
 
-
 import sys
 if sys.stdout.encoding.lower() != 'utf-8':
     try:

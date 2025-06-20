@@ -4,4 +4,6 @@
 backend/__pycache__/
 backend/tests/node_modules
 backend/node_modules
-
+backend/treasury/__pycache__/
+backend/docker.yml
+backend/docker2.yml

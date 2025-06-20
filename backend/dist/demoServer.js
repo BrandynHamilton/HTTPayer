@@ -1,6 +1,9 @@
 import express from "express";
 import { paymentMiddleware } from "x402-express";
 import { Buffer } from "buffer";
+import dotenv from "dotenv";
+dotenv.config();
+const PORT = Number(process.env.DEMO_SERVER_PORT) || 4021;
 const app = express();
 // Helper to decode Base64 → JSON
 function decodeBase64Json(base64Str) {
@@ -22,6 +25,13 @@ app.use(paymentMiddleware("0x58a4Cae5e8dDA3a5614972F34951e482a29ef0f0", // recei
 }, {
     url: "https://x402.org/facilitator",
 }));
+// Health check endpoint
+app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok", message: "Server is running" });
+});
+// app.get("/", (req: Request, res: Response) => {
+//   res.send(`Welcome to the X402 Demo Server!<br>`)
+// });
 // Protected route
 app.get("/weather", (req, res) => {
     const rawHeader = req.headers["x-payment"];
@@ -38,6 +48,6 @@ app.get("/weather", (req, res) => {
         },
     });
 });
-app.listen(4021, () => {
-    console.log(`Server listening at http://localhost:4021`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server listening at http://localhost:${PORT}/`);
 });

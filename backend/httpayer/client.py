@@ -13,12 +13,15 @@ class HttPayerClient:
         """
         :param router_url: URL of the hosted /HttPayer endpoint.
         """
-        self.router_url = router_url or os.getenv("X402_ROUTER_URL")
-        self.api_key = api_key or os.getenv('X402_ROUTER_API_KEY')
+        self.router_url = router_url or os.getenv("X402_ROUTER_URL", "http://provider.boogle.cloud:31157/httpayer")
+        self.api_key = api_key or os.getenv('HTTPAYER_API_KEY')
+
+        if not self.router_url or not self.api_key:
+            raise ValueError("Router URL and API Key must be configured!")
 
     def pay_invoice(self, api_url=None, api_method="GET", api_payload={}):
         """
-        Pay a 402 payment (using local wallet or the router service).
+        Pay a 402 payment (using the router service).
         """
         return self._pay_via_router(api_url, api_method, api_payload)
 
@@ -35,7 +38,9 @@ class HttPayerClient:
             "payload": api_payload
         }
 
-        resp = requests.post(self.router_url, json=data)
+        header = {'x-api-key':self.api_key}
+
+        resp = requests.post(self.router_url, headers=header, json=data)
         resp.raise_for_status()
         return resp
 

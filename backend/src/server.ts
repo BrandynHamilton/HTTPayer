@@ -1,122 +1,170 @@
-import express from "express";
-import dotenv from "dotenv";
-import bodyParser from "body-parser";
-import { createWalletClient, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { wrapFetchWithPayment, decodeXPaymentResponse } from "x402-fetch";
-import { fetch as undiciFetch, RequestInit as UndiciRequestInit } from "undici";
-import {
-  baseSepolia,
-  avalancheFuji,
-  sepolia,
-  Chain,
-} from "viem/chains";
+// ---------------------------------------------------------------------------
+// httpayer server – GET/POST proxy that handles 402 “exact” payments
+// ---------------------------------------------------------------------------
+
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+;(globalThis as any).require = require
+
+import express            from 'express'
+import dotenv             from 'dotenv'
+import bodyParser         from 'body-parser'
+import { createWalletClient, http }        from 'viem'
+import { privateKeyToAccount }             from 'viem/accounts'
+import { wrapFetchWithPayment,
+         decodeXPaymentResponse }          from 'x402-fetch'
+import { fetch as undiciFetch,
+         RequestInit as UndiciRequestInit} from 'undici'
+import { baseSepolia, avalancheFuji,
+         sepolia, Chain }                  from 'viem/chains'
+
+// ---------------------------------------------------------------------------
+// env + bootstrap
+// ---------------------------------------------------------------------------
+
+dotenv.config()
+const PORT = Number(process.env.MAIN_PORT ?? 3000)
+
+const app = express()
+app.use(bodyParser.json())
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok", message: "server running" });
+});
+
+// ---------------------------------------------------------------------------
+// keys / chain map
+// ---------------------------------------------------------------------------
+
+const rawKeys = process.env.PRIVATE_KEYS
+if (!rawKeys) throw new Error('Missing PRIVATE_KEYS in .env')
+let pk = rawKeys.split(',')[0].trim()
+if (!pk.startsWith('0x')) pk = '0x' + pk
+const PRIVATE_KEY = pk as `0x${string}`
+
+const apiKey = process.env.HTTPAYER_API_KEY
+if (!apiKey) throw new Error('Missing HTTPAYER_API_KEY in .env')
 
 const CHAIN_MAP: Record<string, Chain> = {
-  "base-sepolia": baseSepolia,
-  "avalanche-fuji": avalancheFuji,
-  "sepolia": sepolia,
-};
+  'base-sepolia':  baseSepolia,
+  'avalanche-fuji': avalancheFuji,
+  sepolia,
+}
 
-// Load environment variables
-dotenv.config();
+// ---------------------------------------------------------------------------
+// helper – build a clean RequestInit (no content-length on GET)
+// ---------------------------------------------------------------------------
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-app.use(bodyParser.json());
+function buildInit (
+  method: string,
+  payload: unknown
+): UndiciRequestInit {
+  if (method.toUpperCase() === 'GET') {
+    // **NO body / NO content-type** → undici won’t set content-length
+    return { method }
+  }
 
-// Load first PRIVATE_KEY from comma-separated PRIVATE_KEYS
-let rawKeys = process.env.PRIVATE_KEYS;
-if (!rawKeys) throw new Error("Missing PRIVATE_KEYS in .env");
-
-let rawPk = rawKeys.split(",")[0].trim();
-if (!rawPk.startsWith("0x")) rawPk = "0x" + rawPk;
-
-const PRIVATE_KEY = rawPk as `0x${string}`;
-
-// Main endpoint
-app.post("/httpayer", async (req, res) => {
-  const { api_url, method, payload } = req.body;
-
-  const requestInit: UndiciRequestInit = {
+  const body = JSON.stringify(payload ?? {})
+  return {
     method,
-    headers: { "Content-Type": "application/json" },
-    body: method !== "GET" ? JSON.stringify(payload) : undefined,
-  };
+    body,
+    headers: { 'Content-Type': 'application/json' },
+  }
+}
+
+// ---------------------------------------------------------------------------
+// main proxy
+// ---------------------------------------------------------------------------
+
+app.post('/httpayer', async (req, res) => {
+  //-------------------------------- auth
+  if (req.headers['x-api-key'] !== apiKey) {
+    res.status(401).json({ error: 'Unauthorized: invalid API key' })
+    return
+  }
+
+  const { api_url, method, payload } = req.body as {
+    api_url : string
+    method  : string
+    payload?: unknown
+  }
+
+  console.log('[httpayer] →', method, api_url)
+
+  const baseInit = buildInit(method, payload)
 
   try {
-    // First attempt (unauthenticated)
-    const initialResp = await undiciFetch(api_url, requestInit as any);
+    //────────────────── first attempt
+    const initialResp = await undiciFetch(api_url, baseInit as any)
+    console.log('[httpayer] first status', initialResp.status)
 
     if (initialResp.status !== 402) {
-      const body = await initialResp.text();
-      res.status(initialResp.status).send(body);
-      return;
+      res.status(initialResp.status).send(await initialResp.text())
+      return
     }
 
-    // Extract JSON from 402 body to get `accepts` list
-    const errorJson = await initialResp.json() as { accepts?: any[] };
-    const accepts = errorJson.accepts || [];
-    const exactScheme = accepts.find((x: any) => x.scheme === "exact");
+    //────────────────── extract payment reqs
+    const { accepts = [] } = await initialResp.json() as { accepts?: any[] }
+    const exact = accepts.find(x => x.scheme === 'exact')
 
-    if (!exactScheme || !exactScheme.network) {
-      res.status(400).json({ error: "Missing 'exact' scheme or network in paymentRequirements" });
-      return;
+    if (!exact?.network) {
+      res.status(400).json({ error: 'Missing exact scheme or network' })
+      return
     }
 
-    const network = exactScheme.network;
-    if (!CHAIN_MAP[network]) {
-      res.status(400).json({ error: `Unsupported network: ${network}` });
-      return;
+    const chain = CHAIN_MAP[exact.network]
+    if (!chain) {
+      res.status(400).json({ error: `Unsupported network: ${exact.network}` })
+      return
     }
 
-    const chain = CHAIN_MAP[network];
+    //────────────────── set-up paid fetch
+    const account      = privateKeyToAccount(PRIVATE_KEY)
+    const walletClient = createWalletClient({ account, transport: http(), chain })
+    const fetchWithPay = wrapFetchWithPayment(undiciFetch as any, walletClient)
 
-    // ——— Dynamically create wallet client for that chain ———
-    const account = privateKeyToAccount(PRIVATE_KEY);
-    const walletClient = createWalletClient({
-      account,
-      transport: http(),
-      chain,
-    });
+    const paidInit: UndiciRequestInit & { paymentRequirements: any } = {
+      ...baseInit,
+      paymentRequirements: [exact],
+      headers: {
+        ...baseInit.headers,
+        connection: 'close',
+      },
+    }
 
-    // ——— Use this client to wrap fetch ———
-    const fetchWithPayment = wrapFetchWithPayment(
-      undiciFetch as unknown as typeof globalThis.fetch,
-      walletClient
-    );
+    console.log('[httpayer] paying…',
+      `{chain:${chain.name}  to:${exact.payTo}  amount:${exact.maxAmountRequired}}`
+    )
 
-    // Retry with payment
-    const paidResp = await fetchWithPayment(api_url, requestInit as any);
+    const paidResp = await fetchWithPay(api_url, paidInit as any)
+    const text     = await paidResp.text()
 
-    // Optional: Handle callback
-    const xHeader = paidResp.headers.get("x-payment-response");
-    if (xHeader) {
-      const paymentInfo = decodeXPaymentResponse(xHeader);
-      if (paymentInfo.callbackUrl) {
-        const callbackResp = await undiciFetch(paymentInfo.callbackUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ tx_hash: paymentInfo.txHash }),
-        });
+    console.log('[httpayer] paid status', paidResp.status)
 
-        if (!callbackResp.ok) {
-          res.status(500).json({ error: "Callback failed" });
-          return;
-        }
+    // optional callback
+    const payHdr = paidResp.headers.get('x-payment-response')
+    if (payHdr) {
+      const dec = decodeXPaymentResponse(payHdr)
+      if (dec.callbackUrl) {
+        undiciFetch(dec.callbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tx_hash: dec.txHash }),
+        }).catch(e => console.warn('callback failed', e))
       }
     }
 
-    const body = await paidResp.text();
-    res.status(paidResp.status).send(body);
-    return;
+    res.status(paidResp.status).send(text)
   } catch (err: any) {
-    console.error("Server error:", err);
-    res.status(500).json({ error: err.message || "Unknown error" });
-    return;
+    console.error('[httpayer] error:', err)
+    res.status(500).json({ error: err.message ?? 'unknown error' })
   }
-});
+})
 
-app.listen(PORT, () => {
-  console.log(`httpayer server running on port ${PORT}`);
-});
+// ---------------------------------------------------------------------------
+// serve
+// ---------------------------------------------------------------------------
+
+app.listen(PORT, '0.0.0.0', () =>
+  console.log(`httpayer server running on :${PORT}`)
+)

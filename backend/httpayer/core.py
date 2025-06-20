@@ -7,6 +7,22 @@ import requests
 from eth_account import Account
 from web3 import Web3
 
+def decode_x_payment(header: str) -> dict:
+    """
+    Decode a base64-encoded X-PAYMENT header back into its structured JSON form.
+
+    :param header: Base64-encoded X-PAYMENT string
+    :return: Parsed Python dictionary of the payment payload
+    """
+    try:
+        decoded_bytes = base64.b64decode(header)
+        decoded_json = json.loads(decoded_bytes)
+        if not isinstance(decoded_json, dict):
+            raise ValueError("Decoded X-PAYMENT is not a JSON object")
+        return decoded_json
+    except (ValueError, json.JSONDecodeError, base64.binascii.Error) as e:
+        raise ValueError(f"Invalid X-PAYMENT header: {e}")
+
 def _make_authorization(from_addr: str, to_addr: str, value: str, valid_secs: int = 60):
     """Build EIP-3009 authorization object."""
     now = int(time.time())

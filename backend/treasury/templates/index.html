@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💵 HTTPayer Treasury Server</title>
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
+  <style>
+    body            { font-family: system-ui, sans-serif; margin: 1.5rem; }
+    h1, h2, h3, h4  { margin:.25em 0; }
+    .loading        { font-style: italic; }
+    ul              { list-style:none; padding-left:0; }
+    li              { line-height:1.4em; }
+    .graph-container {
+      background:#fff; border:2px solid #000; border-radius:10px;
+      margin:2rem 0; padding:20px;
+      min-height:400px; display:flex; justify-content:center; align-items:center;
+    }
+    footer a        { color:#fff; text-decoration:underline; }
+  </style>
+
+  <script>
+    const VALID_CHAIN_NAMES = ["ethereum", "avalanche", "base", "arbitrum", "optimism", "polygon", "bnb", "solana", "gnosis", "fantom"];
+
+    function safeFmt(n, d = 2) {
+      const x = Number(n);
+      return Number.isFinite(x) ? x.toFixed(d) : "∞";
+    }
+
+    function plotBalances() {
+      const container = document.getElementById("graph_1");
+      const chartArea = document.getElementById("chart-area");
+
+      // chartArea.textContent = "Loading chart…";
+
+      fetch("/treasury/charts")
+        .then(r => r.json())
+        .then(payload => {
+          const fig = JSON.parse(payload.graph_1);
+          Plotly.newPlot(chartArea, fig.data, fig.layout, { responsive: true }).then(() => {
+            container.classList.remove("loading");
+          });
+        })
+        .catch(err => {
+          console.error("viz fetch error:", err);
+          chartArea.textContent = "Error loading chart.";
+        });
+    }
+
+    function loadDashboard() {
+      const burnBox = document.getElementById("burn-rate-box");
+      const ccipBox = document.getElementById("ccip-list");
+
+      burnBox.textContent = "Loading burn-rate data…";
+      ccipBox.textContent = "Loading CCIP transfers…";
+
+      fetch("/treasury/cached-data")
+        .then(r => r.json())
+        .then(payload => {
+          const data     = payload.data     || {};
+          const messages = payload.messages || [];
+
+          burnBox.innerHTML = "";
+          burnBox.classList.remove("loading");
+
+          const validChains = Object.keys(data).filter(chain =>
+            VALID_CHAIN_NAMES.includes(chain.toLowerCase())
+          );
+
+          if (validChains.length === 0) {
+            burnBox.textContent = "No cached burn-rate yet.";
+          } else {
+            validChains.forEach(chain => {
+              const accounts = data[chain];
+              const chainDiv = document.createElement("div");
+              chainDiv.style.marginBottom = "2rem";
+              chainDiv.innerHTML = `<h2>${chain.toUpperCase()}</h2>`;
+
+              Object.entries(accounts).forEach(([addr, info]) => {
+                const accDiv = document.createElement("div");
+                accDiv.style.margin = "0 0 1.5rem 1rem";
+                accDiv.innerHTML = `
+                  <h4 style="margin:.25em 0;">Acct: ${addr}</h4>
+                  <ul>
+                    <li><strong>Avg Burn Rate:</strong> ${safeFmt(info.average_burn_rate)} USDC/day</li>
+                    <li><strong>Balance:</strong> ${safeFmt(info.balance)} USDC</li>
+                    <li><strong>Runway:</strong> ${safeFmt(info.runway.days,1)} d (${safeFmt(info.runway.months)} mo, ${safeFmt(info.runway.years)} yr)</li>
+                    <li><strong>Last Updated:</strong> ${new Date(info.timestamp).toLocaleString()}</li>
+                  </ul>`;
+                chainDiv.appendChild(accDiv);
+              });
+
+              burnBox.appendChild(chainDiv);
+            });
+          }
+
+          ccipBox.innerHTML = "";
+          ccipBox.classList.remove("loading");
+
+          if (messages.length === 0) {
+            ccipBox.textContent = "No transfers recorded yet.";
+          } else {
+            const list = document.createElement("ul");
+            messages.slice().reverse().forEach(url => {
+              const li = document.createElement("li");
+              li.innerHTML = `<a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+              list.appendChild(li);
+            });
+            ccipBox.appendChild(list);
+          }
+        })
+        .catch(err => {
+          console.error("dashboard fetch error:", err);
+          burnBox.textContent = "Error loading burn-rate data.";
+          ccipBox.textContent = "Error loading CCIP transfers.";
+        });
+
+      plotBalances();
+    }
+
+    window.onload = loadDashboard;
+  </script>
+</head>
+
+<body>
+  <h1>💵 HTTPayer Treasury Server</h1>
+
+  <h2>Chain Balances</h2>
+  <div id="graph_1" class="graph-container loading">
+    <div id="chart-area"></div>
+  </div>
+
+
+  <h2>Burn-Rate (cached)</h2>
+  <div id="burn-rate-box" class="loading">Loading…</div>
+
+  <h2 style="margin-top:2.5rem;">Latest CCIP transfers</h2>
+  <div id="ccip-list" class="loading">Loading…</div>
+
+  <footer style="text-align:center;margin-top:2rem;padding:10px;background:#333;color:#fff">
+    <p>GitHub · <a href="https://github.com/BrandynHamilton/HttPayer">HTTPayer</a></p>
+  </footer>
+</body>
+</html>
