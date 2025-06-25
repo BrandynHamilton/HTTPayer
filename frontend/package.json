@@ -24,6 +24,7 @@
     "@typescript-eslint/parser": "^8.34.1",
     "@wagmi/cli": "latest",
     "bufferutil": "^4.0.8",
+    "dotenv": "^16.5.0",
     "encoding": "^0.1.13",
     "eslint": "^9.29.0",
     "eslint-config-next": "15.3.4",

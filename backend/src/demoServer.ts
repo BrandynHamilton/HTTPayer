@@ -31,8 +31,8 @@ app.use(
     },
     {
       url: "https://x402.org/facilitator",
-    }
-  )
+    },
+  ),
 );
 
 // Health check endpoint
@@ -49,7 +49,9 @@ app.get("/weather", (req: Request, res: Response) => {
   const rawHeader = req.headers["x-payment"];
   console.log("=== Raw X-PAYMENT header ===\n", rawHeader);
 
-  const decoded = typeof rawHeader === "string" ? decodeBase64Json(rawHeader) : null;
+  const decoded = typeof rawHeader === "string"
+    ? decodeBase64Json(rawHeader)
+    : null;
   console.log("=== Decoded X-PAYMENT ===\n", JSON.stringify(decoded, null, 2));
 
   if (decoded) {
