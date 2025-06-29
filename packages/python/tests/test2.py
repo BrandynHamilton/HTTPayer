@@ -1,16 +1,16 @@
 import requests
 from flask import Flask, request, jsonify, make_response
+from web3 import Web3
 from httpayer import X402Gate
 import os
 from dotenv import load_dotenv
 
 from ccip_terminal.metadata import USDC_MAP
-from ccip_terminal.network import network_func
 load_dotenv()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-ERC20_ABI_PATH = os.path.join(current_dir, "../abi/erc20.json")
+ERC20_ABI_PATH = os.path.join(current_dir, "abi/erc20.json")
 print(f'ERC20_ABI_PATH: {ERC20_ABI_PATH}')
 
 with open(ERC20_ABI_PATH, 'r') as f:
@@ -18,19 +18,32 @@ with open(ERC20_ABI_PATH, 'r') as f:
 
 load_dotenv()
 
+network = os.getenv("NETWORK", "base").lower()
+
 FACILITATOR_URL = os.getenv("FACILITATOR_URL", "https://x402.org")
-PAY_TO_ADDRESS = os.getenv("PAY_TO_ADDRESS", "0x58a4Cae5e8dDA3a5614972F34951e482a29ef0f0")
+PAY_TO_ADDRESS = os.getenv("PAY_TO_ADDRESS", None)
+RPC_GATEWAY = os.getenv("RPC_GATEWAY", None)
+
+if not PAY_TO_ADDRESS:
+    raise ValueError("PAY_TO_ADDRESS must be set in the environment variables.")
+
+if not RPC_GATEWAY:
+    raise ValueError("RPC_GATEWAY must be set in the environment variables.")
 
 print(f'FACILITATOR_URL: {FACILITATOR_URL}')
-
-network = 'avalanche'
+print(f'PAY_TO_ADDRESS: {PAY_TO_ADDRESS}')
+print(f'RPC_GATEWAY: {RPC_GATEWAY}')
 
 if network == 'avalanche':
     network_id = 'avalanche-fuji'
     if FACILITATOR_URL == "https://x402.org":
         raise ValueError("FACILITATOR_URL must be set to a valid URL for Avalanche Fuji testnet.")
+elif network == 'base':
+    network_id = 'base-sepolia'
+    if FACILITATOR_URL != "https://x402.org":
+        raise ValueError("FACILITATOR_URL must be set to a valid URL for Base Sepolia testnet.")
 
-w3 = network_func(network)
+w3 = Web3(Web3.HTTPProvider(RPC_GATEWAY))
 
 token_address = USDC_MAP.get(network)
 
@@ -59,21 +72,37 @@ def create_app():
     @app.route("/health")
     def health():
         return "OK", 200
-    
+
     @app.route('/')
     def index():
-        return "<h1>Avalanche Weather Server</h1><p>Welcome to the Avalanche Weather Server!</p>"
+        return "<h1>Demo Weather Server</h1><p>Welcome to the Demo Weather Server!</p>"
 
-    @app.route("/avalanche-weather")
-    @gate.gate
+    @app.route("/weather")
     def weather():
-        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
-        return response
+        request_data = {
+            "headers": dict(request.headers),
+            "url": request.base_url
+        }
+
+        @gate.gate
+        def protected(_request_data):
+            return {
+                "status": 200,
+                "headers": {},
+                "body": {
+                    "weather": "sunny",
+                    "temp": 75
+                }
+            }
+
+        result = protected(request_data)
+
+        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
 
     return app
 
 if __name__ == "__main__":
-    port = int(os.getenv("TEST_SERVER_PORT", 5035))
-    print(f'Starting test4 on {port}...')
+    port = int(os.getenv("TEST_SERVER_PORT", 50358))
+    print(f'Starting demo on {port}...')
     app = create_app()
     app.run(host="0.0.0.0",port=port)

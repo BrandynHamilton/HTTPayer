@@ -14,7 +14,7 @@ url = f"http://provider.boogle.cloud:31157/httpayer"
 header = {'x-api-key':HTTPAYER_API_KEY}
 
 payload = {
-    "api_url": f"http://provider.akash-palmito.org:30862/avalanche-weather",  # replace with actual 402-enabled URL
+    "api_url": f"http://provider.akash-palmito.org:30862/avalanche-weather",  # 402-enabled URL
     "method": "GET",  # or "POST"
 }
 

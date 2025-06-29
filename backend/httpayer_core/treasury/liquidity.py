@@ -9,7 +9,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from web3 import Web3
 
-from httpayer.treasury.burn_rate import (
+from httpayer_core.treasury.burn_rate import (
     fetch_authorized_burns,       
     rolling_burn,
     current_usdc_balance,

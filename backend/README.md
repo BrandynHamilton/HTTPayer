@@ -10,8 +10,6 @@ Additionally, there are several other servers necessary for demos and multi-chai
 1. **Facilitator Server (Flask)** - Enables x402 usage on Avalanche.
 2. **x402 Demo Server (Flask)** - An endpoint for HTTPayer tests and demos which can handle both Base Sepolia and Avalanche Fuji x402 processes.
 
-A Python SDK was also created to interact with both the x402 protocol and HTTPayer server. It enables 402 gating of endpoints via a decorator class, as well as a client class to handle 402 status codes through the HTTPayer server.
-
 The backend is currently deployed to Akash; links can be found below.
 
 ---
@@ -36,15 +34,13 @@ backend/
 ├── tests/
 |   |── test1.py          # W.I.P. Python payment client API
 |   |── test2.py          # Calls 402 endpoint w/ HTTPayer
-|   |── test3.py          # Calls 402 endpoint w/ SDK
-|   └── test4.py          # Tests HTTPayer 402 gate class
 ├── dist/                 # Compiled JS from `tsc`
 ├── treasury/             # Python CCIP + treasury server
 │   |── main.py
 |   └── cli.py
 ├── facilitator/          # Facilitator server
 |   |── facilitator.py
-├── httpayer/             # HTTPayer Python SDK
+├── httpayer_core/        # HTTPayer core Python scripts
 ├── abi/                  # ERC-20 ABI
 ├── Dockerfile            # Backend container spec
 ├── package.json          # Node dependencies
@@ -135,8 +131,6 @@ ALCHEMY_API_KEY= abc123...
 ETHERSCAN_API_KEY= xyz789...
 ```
 
-For SDK usage only, simply copy .env.sample to .env (all that is needed is HTTPAYER_API_KEY)
-
 ---
 
 ## Endpoints
@@ -198,84 +192,11 @@ x-api-key: YOUR_HTTPAYER_API_KEY
 
 ---
 
-## Python SDK
-
-- HTTPayerClient(router_url=None, api_key=None)
-  Passing router_url and api_key are optional. By default the class checks .env for X402_ROUTER_URL and HTTPAYER_API_KEY.
-
-Example usage:
-
-```python
-
-from httpayer import HttPayerClient
-
-url="http://provider.akash-palmito.org:30862/avalanche-weather" # 402 protected endpoint
-
-client = HttPayerClient() # Initiates client object
-response = client.request("GET", url) # Sends API call to HTTPayer server
-
-```
-
-- X402Gate(
-  pay_to # address to receive payment
-  network # viem network id of preferred blockchain
-  asset_address # token address to receive
-  max_amount # raw amount of token to receive
-  asset_name # onchain resolved name
-  asset_version # onchain resolved version
-  facilitator_url # URL for facilitator server
-  )
-
-Example usage:
-
-```python
-
-from httpayer import X402Gate
-import os
-from dotenv import load_dotenv
-from ccip_terminal.metadata import USDC_MAP
-
-load_dotenv()
-
-ERC20_ABI_PATH = 'abi/erc20.json'
-
-with open(ERC20_ABI_PATH, 'r') as f:
-  ERC20_ABI = f.read()
-
-FACILITATOR_URL = os.getenv("FACILITATOR_URL", "https://x402.org")
-GATEWAY = os.getenv("GATEWAY", "https://api.avax-test.network/ext/bc/C/rpc")
-NETWORK = 'avalanche' # resolves to avalanche-fuji
-
-w3 = Web3(Web3.HTTPProvider(GATEWAY))
-
-token_address = USDC_MAP.get(NETWORK)
-
-token_contract = w3.to_checksum_address(token_address)
-token = w3.eth.contract(address=token_contract, abi=ERC20_ABI)
-name_onchain    = token.functions.name().call()
-version_onchain = token.functions.version().call()
-
-extra = {"name": name_onchain, "version": version_onchain}
-
-gate = X402Gate(
-    pay_to=PAY_TO_ADDRESS,
-    network=network_id,
-    asset_address=token_address,
-    max_amount=1000, # raw amount, actually is 0.001 USDC
-    asset_name=extra["name"],
-    asset_version=extra["version"],
-    facilitator_url=FACILITATOR_URL
-)
-
-```
-
 ## Tests
 
-The `tests` directory provides examples of how to use the HTTPayer API and Python SDK.
+The `tests` directory provides examples of how to use the HTTPayer API.
 
 - test2.py demonstrates how to use the API w/ the `requests` library
-- test3.py demonstates how to use the API w/ the Python SDK
-- test4.py demonstrates how to gate an API endpoint using the Python SDK
 
 ## Deployments
 

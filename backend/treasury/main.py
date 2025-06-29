@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from web3 import Web3
 from eth_account import Account
-# from chartengineer import ChartMaker  # Temporarily disabled due to kaleido dependency issues
+from chartengineer import ChartMaker  # May need to comment out due to kaleido dependency issues
 from plotly.utils import PlotlyJSONEncoder
 from ccip_terminal.ccip import (send_ccip_transfer, get_account_info, get_ccip_fee_estimate, 
                                 get_gas_limit_estimate, check_ccip_message_status)
@@ -25,18 +25,18 @@ from diskcache import Cache
 from typing import Dict, Tuple
 from threading import Thread
 
-from httpayer.treasury.burn_rate import (
+from httpayer_core.treasury.burn_rate import (
     fetch_authorized_burns,
     rolling_burn,
     current_usdc_balance,
     runway_metrics
 )
 
-from httpayer.treasury.liquidity import rebalance_once
+from httpayer_core.treasury.liquidity import rebalance_once
 
 # Load environment variables
 load_dotenv()
-# PRIVATE_KEYS = os.getenv("PRIVATE_KEYS", "").split(",")[0]
+# PRIVATE_KEYS = os.getenv("PRIVATE_KEYS", "").split(",")[0] # ccip-terminal handles this for us in backend
 ACCOUNT_ADDRESS = os.getenv("ACCOUNT_ADDRESS")
 
 cache = Cache('cache_dir')

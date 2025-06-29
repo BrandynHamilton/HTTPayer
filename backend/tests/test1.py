@@ -1,4 +1,4 @@
-from httpayer import wrap_request_with_payment
+from httpayer_core import wrap_request_with_payment
 import requests
 import os
 from dotenv import load_dotenv
