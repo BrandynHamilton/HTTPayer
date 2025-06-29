@@ -57,6 +57,7 @@ HTTPayer consists of three main components:
   - Interact with the x402 protocol.
   - Protect Python API endpoints with 402-gating.
   - Send requests through the HTTPayer router server.
+  - [PyPi Link](https://pypi.org/project/httpayer/)
 
 - **TypeScript SDK (`httpayer-ts`)**  
   Enables:
