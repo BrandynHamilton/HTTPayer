@@ -145,7 +145,7 @@ For SDK usage only, simply copy .env.sample to .env (all that is needed is HTTPA
 
 | Method | Endpoint    | Description                       |
 | ------ | ----------- | --------------------------------- |
-| POST   | `/health`   | API health endpoint               |
+| GET    | `/health`   | API health endpoint               |
 | POST   | `/httpayer` | Automatically pays `402` endpoint |
 
 Request JSON:

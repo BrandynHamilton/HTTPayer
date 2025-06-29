@@ -112,12 +112,14 @@ ACCOUNT_ADDRESS = os.getenv("ACCOUNT_ADDRESS")
 
 if __name__ == "__main__":
 
-    chain = "avalanche"  # or "avalanche"
+    chain = "base"  # or "avalanche"
     ACCOUNT_ADDRESS = os.getenv("ACCOUNT_ADDRESS", "0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab")
 
     print(f"Pulling transfers for {ACCOUNT_ADDRESS} on {chain}…")
     df_tx = fetch_authorized_burns(ACCOUNT_ADDRESS, chain)
     print(f"Found {len(df_tx):,} outbound USDC transfers")
+
+    breakpoint()
 
     avg_7d, daily = rolling_burn(df_tx, window_days=7)
     print(f"🟠  Rolling 7-day burn-rate: {avg_7d:.2f} USDC / day")
