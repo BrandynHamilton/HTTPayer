@@ -56,7 +56,7 @@ async function runAdvancedDemo() {
             `${HTTPAYER_URL.replace("/httpayer", "")}/health`,
         ),
         checkServiceHealth("Treasury Server", `${TREASURY_URL}/health`),
-        // checkServiceHealth("Facilitator Server", `${FACILITATOR_URL}/facilitator/health`), // Temporarily disabled
+        checkServiceHealth("Facilitator Server", `${FACILITATOR_URL}/health`), // Temporarily disabled
         checkServiceHealth("Demo Server", `${DEMO_SERVER_URL}/health`),
     ]);
 
@@ -85,13 +85,13 @@ async function runAdvancedDemo() {
     console.log(
         "\nStep 3: Fetching supported networks from Facilitator... (Temporarily disabled)",
     );
-    /* try {
+      try {
         const facilitatorResponse = await fetch(`${FACILITATOR_URL}/facilitator/supported`);
         const facilitatorData = await facilitatorResponse.json();
         console.log("Facilitator supports:", facilitatorData);
     } catch (error) {
         console.error("Could not fetch facilitator info:", error);
-    } */
+    } 
 
     // 4. Fetch multiple 402-protected resources in parallel via HTTPayer
     console.log(

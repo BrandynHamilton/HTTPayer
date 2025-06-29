@@ -105,6 +105,7 @@ def compute_burn_rate_for_chains(chains: list[str], window_days=7) -> dict:
 
             df_tx = fetch_authorized_burns(account_address, chain)
             # print(f'df_tx: {df_tx.head()}')
+            cache.set(f"transactions_{chain}_{account_address}", df_tx)
             avg_7d, daily = rolling_burn(df_tx, window_days=window_days)
 
             w3 = network_func(chain)
@@ -206,8 +207,8 @@ def create_app():
         balances_df = pd.DataFrame(balances)
         # print(f"Balances DataFrame:\n{balances_df}")
 
-        cm = ChartMaker()
-        cm.build(
+        cm1 = ChartMaker()
+        cm1.build(
             df=balances_df,
             groupby_col='chain',
             num_col='balance',
@@ -222,8 +223,9 @@ def create_app():
                 'textinfo':'percent+label'
             }
         )
-        cm.add_title()
-        graph_json_1 = json.dumps(cm.return_fig(), cls=PlotlyJSONEncoder)
+        cm1.add_title()
+        
+        graph_json_1 = json.dumps(cm1.return_fig(), cls=PlotlyJSONEncoder)
 
         return jsonify({
             'graph_1': graph_json_1
