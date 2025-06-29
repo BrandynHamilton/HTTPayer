@@ -1,5 +1,5 @@
 from diskcache import Cache
-from chartengineer import ChartMaker
+# from chartengineer import ChartMaker  # Temporarily disabled due to kaleido dependency issues
 from pathlib import Path
 import pandas as pd
 

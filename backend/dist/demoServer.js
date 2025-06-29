@@ -36,7 +36,9 @@ app.get("/health", (req, res) => {
 app.get("/weather", (req, res) => {
     const rawHeader = req.headers["x-payment"];
     console.log("=== Raw X-PAYMENT header ===\n", rawHeader);
-    const decoded = typeof rawHeader === "string" ? decodeBase64Json(rawHeader) : null;
+    const decoded = typeof rawHeader === "string"
+        ? decodeBase64Json(rawHeader)
+        : null;
     console.log("=== Decoded X-PAYMENT ===\n", JSON.stringify(decoded, null, 2));
     if (decoded) {
         console.log("Full payload:", JSON.stringify(decoded.payload, null, 2));
@@ -51,3 +53,4 @@ app.get("/weather", (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server listening at http://localhost:${PORT}/`);
 });
+//# sourceMappingURL=demoServer.js.map

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 from web3 import Web3
 from eth_account import Account
-from chartengineer import ChartMaker
+# from chartengineer import ChartMaker  # Temporarily disabled due to kaleido dependency issues
 from plotly.utils import PlotlyJSONEncoder
 from ccip_terminal.ccip import (send_ccip_transfer, get_account_info, get_ccip_fee_estimate, 
                                 get_gas_limit_estimate, check_ccip_message_status)

@@ -28,7 +28,7 @@ dependencies = [
     "pyngrok>=7.0.5",
     "python-viem>=0.1.0",
     "pywin32; sys_platform == 'win32'",
-    "chartengineer==0.1.3",
+    # "chartengineer==0.1.3",  # Temporarily disabled due to kaleido dependency issues on Linux
 ]
 
 [tool.setuptools.packages.find]

@@ -4,13 +4,15 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "skipLibCheck": true,
     "outDir": "dist",
     "rootDir": "src",
-    "typeRoots": ["./node_modules/@types", "./src/types"]
-
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "declaration": true,
+    "sourceMap": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
