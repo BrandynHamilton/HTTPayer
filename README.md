@@ -57,12 +57,13 @@ CCIP-Terminal and USDC across multiple EVM chains.
 - [x] Publish HTTPayer SDK to PyPi
 - [x] Develop HTTPayer Javascript/Typescript SDK
 - [x] Develop HTTPayer UI/frontend
+- [x] Create `src/components/` directory for reusable UI components
+- [x] Add README instructions for local dev, environment setup, and contributing
+- [x] Install Tailwind CSS
 - [ ] Config Vercel
-- [ ] Deploy HTTPayer frontend
-- [ ] Create `src/components/` directory for reusable UI components
-- [ ] Add README instructions for local dev, environment setup, and contributing
-- [ ] Polish UI/UX for demo (loading states, empty states, responsive design)
-- [ ] Prepare for Vercel deployment (env vars, config)
+- [ ] Deploy HTTPayer frontend first iteration
+- [ ] Vibe on!
+- [ ] Polish UI/UX
 - [ ] (Optional) Add manual cross-chain transfer demo (Treasury API)
 - [ ] (Optional) Add recent transactions/status list (Treasury API)
 - [ ] Publish HTTPayer SDK to NPM
