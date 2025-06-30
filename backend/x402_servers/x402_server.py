@@ -1,5 +1,6 @@
 import requests
 from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS
 from httpayer import X402Gate
 import os
 from dotenv import load_dotenv
@@ -74,25 +75,63 @@ base_gate = X402Gate(
 def create_app():
     app = Flask(__name__)
 
+    CORS(app)
+
     @app.route("/health")
     def health():
         return "OK", 200
-    
-    @app.route('/')
+
+    @app.route("/")
     def index():
         return "<h1>x402 Demo Server</h1><p>Welcome to the x402 Demo Server!</p>"
 
     @app.route("/avalanche-weather")
-    @avalanche_gate.gate
     def avalanche_weather():
-        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
-        return response
-    
+        request_data = {
+            "headers": dict(request.headers),
+            "url": request.base_url
+        }
+
+        def handler(_request_data):
+            return {
+                "status": 200,
+                "headers": {},
+                "body": {
+                    "data": {
+                        "body": {
+                            "weather": "sunny",
+                            "temp": 75
+                        }
+                    },
+                    "error": False
+                }
+            }
+
+        result = avalanche_gate.gate(handler)(request_data)
+        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
+
     @app.route("/base-weather")
-    @base_gate.gate
     def base_weather():
-        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
-        return response
+        request_data = {
+            "headers": dict(request.headers),
+            "url": request.base_url
+        }
+
+        def handler(_request_data):
+            return {
+                "status": 200,
+                "headers": {},
+                "body": {
+                    "body": {
+                        "weather": "sunny",
+                        "temp": 75
+                    },
+                    "error": False
+                }
+            }
+
+        result = base_gate.gate(handler)(request_data)
+        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
 
     return app
 
