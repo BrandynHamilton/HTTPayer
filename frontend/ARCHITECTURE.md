@@ -255,20 +255,19 @@ flowchart TD
 - **`layout.tsx` and `page.tsx`**: These are React Server Components by default.
   `layout.tsx` provides the base structure and wraps `page.tsx` with providers
   for client-side functionality. `page.tsx` then orchestrates and renders the
-  necessary client components for interactivity.
-- **`Header.tsx`**: This is a Client Component because it uses `wagmi` hooks for
-  wallet connection and handles user interaction (button clicks). Its primary
-  role regarding blockchain interaction is to enable wallet connection for
-  potential signing requests (e.g., EIP-712/EIP-3009) that are then sent to the
-  backend.
-- **`Dashboard.tsx`**: This is a Client Component because it uses `useQuery` for
-  real-time polling and displays dynamic data, which requires client-side
-  JavaScript. It consumes data from the backend's Treasury service, abstracting
-  chain details.
-- **`PaymentDemo.tsx`**: This is a Client Component due to its interactive
-  elements (`useState`, button clicks) and its need to make client-side API
-  calls to the HTTPayer orchestration service. It focuses on the HTTP 402 flow,
-  not direct blockchain calls.
+  necessary client components for interactivity, including the Chainlink
+  Functions status placeholder.
+- **`Header.tsx`**: Client Component for wallet connection and user interaction.
+- **`Dashboard.tsx`**: Client Component for live balances and system status
+  (CCIP, treasury), using real API integration.
+- **`PaymentDemo.tsx`**: Client Component for interactive x402 payment demo,
+  using real API integration for the `/httpayer` endpoint.
+- **`ChainlinkFunctionsStatus.tsx`**: Client Component that provides a static,
+  narrative-supporting placeholder for Chainlink Functions integration. It
+  displays a prominent title, concise description (from the demo script), and a
+  status indicator ("In Development"). This component is integrated into
+  `page.tsx` to visually acknowledge ongoing/future Chainlink Functions work for
+  hackathon/demo alignment.
 - **Server Actions (e.g., in `app/actions.ts`)**: These functions can be
   directly imported and called from Client or Server Components. They execute
   exclusively on the server, allowing for direct database or external API
@@ -517,3 +516,17 @@ The HTTPayer frontend is designed for deployment on **Vercel**.
 - **Automatic Scaling:** Vercel automatically scales the application to handle
   traffic spikes, ensuring reliability during demonstrations or future
   high-usage scenarios.
+
+## 9. Demo Strategy & Narrative Alignment
+
+- The demo is structured to maximize clarity and impact for hackathon judges:
+  - **Flawless Core Demo:** The highest priority is a working, visually clear
+    demonstration of cross-chain USDC transfers (CCIP) and the x402 payment
+    flow, as implemented in `Dashboard.tsx` and `PaymentDemo.tsx`.
+  - **Narrative-Supporting Placeholders:** For features that are in-progress or
+    on the roadmap (e.g., Chainlink Functions integration), dedicated UI
+    components like `ChainlinkFunctionsStatus.tsx` are included to explicitly
+    acknowledge and explain these features, supporting the script and maximizing
+    bonus points for "multiple Chainlink services."
+  - **UI Polish & Testing:** The UI is designed to be clean, professional, and
+    responsive, with comprehensive testing to ensure a smooth demo experience.

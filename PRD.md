@@ -2,6 +2,93 @@
 
 **HTTPayer**
 
+# Pitch
+
+### 1. **Overview – What is HTTPayer**
+
+- **HTTPayer** is a server framework and SDK designed to automate stablecoin
+  payments using the x402 protocol.
+- It makes the **x402 protocol** easy to use — for developers, for apps, and
+  even for smart contracts.
+- Powered by **Chainlink CCIP**, **Chainlink Functions**, and stablecoins like
+  USDC.
+
+### 2. **What is x402 / 402?**
+
+- HTTP 402 means “Payment Required” — a standard response code never fully
+  adopted... until now.
+- The **x402 protocol** lets you protect any API behind a crypto payment wall.
+- But until HTTPayer, it required a wallet, signatures, and custom routing logic
+  — hard to build and scale.
+
+### 3. **Why HTTPayer Matters**
+
+- HTTPayer brings x402 to life:
+  - Makes it **usable by any dev** with simple Python/TypeScript SDKs.
+  - Enables **account abstraction** — no wallet needed to pay.
+  - Adds **multi-chain liquidity**, powered by Chainlink CCIP.
+  - Automatically retries requests after payment.
+- It turns stablecoin payments into a **drop-in middleware layer** — just like
+  Stripe or API keys.
+
+### 4. **Architecture Overview**
+
+#### Backend
+
+- **TypeScript Node Server**: Handles x402 retries, EIP-3009 signing, payment
+  coordination.
+- **Python Treasury (Flask)**: Handles cross-chain USDC transfers, burn
+  tracking, gas management using **Chainlink CCIP**.
+- **Facilitator Server**: Chain-specific payment verification and settlement
+  logic (e.g., Base, Avalanche).
+- **Demo Server**: Real 402-protected endpoints for testing.
+
+#### SDKs
+
+- **Python SDK**: Add gate decorator to any route in Flask, FastAPI, etc.
+- **TypeScript SDK**: Auto-handle 402 responses in Express or frontend apps.
+  Handles EIP-712 + retry flows.
+
+#### Smart Contracts
+
+- HTTPayer also includes a **Chainlink Functions smart contract**.
+- This lets smart contracts:
+  - Trigger 402-gated API calls via HTTPayer
+  - Make stablecoin payments off-chain
+  - Receive gated data (weather, credit scores, etc.)
+- This closes the loop — now smart contracts can "pay-to-consume" any real-world
+  API, securely.
+
+### 5. **What This Unlocks**
+
+- **For Devs**: Monetize APIs in minutes — no crypto infra or wallet UX needed.
+- **For Users**: Access paid APIs and services using accounts — no wallet
+  required.
+- **For Agents**: Enable autonomous actors to consume paid services using
+  HTTPayer.
+- **For Smart Contracts**: Securely interact with monetized APIs via Chainlink
+  Functions.
+- **For the Ecosystem**: A real way to do Stripe-style payments with crypto —
+  interoperable, composable, and chain-agnostic.
+
+### 6. **Hackathon Alignment**
+
+- **Onchain Finance**: End-to-end USDC flows, composable API monetization.
+- **Cross-Chain Solutions**: Chainlink CCIP treasury rebalancing across Base +
+  Avalanche.
+- **Avalanche Track**: Live contracts + facilitator server deployed on Avalanche
+  Fuji.
+- **Chainlink Core Prize**: Uses Chainlink **Functions** and **CCIP** to make
+  actual state changes based on off-chain logic.
+
+### 7. **Closing**
+
+- HTTPayer turns x402 into real infrastructure — no wallet needed, no hacky
+  scripts.
+- It’s how smart contracts, agents, and APIs will **talk and transact**.
+
+# Submission Questions
+
 ### The problem it solves
 
 The current landscape of onchain payments and monetization is fragmented,

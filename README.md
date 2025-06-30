@@ -7,6 +7,42 @@ CCIP-Terminal and USDC across multiple EVM chains.
 
 ## TODO
 
+### Immediate (Current Focus)
+
+- [ ] Complete real API integration in `frontend/src/components/Dashboard.tsx`
+      (live balances, CCIP status)
+
+### Next (Critical for Script Alignment)
+
+- [ ] Create `frontend/src/components/ChainlinkFunctionsStatus.tsx` (Client
+      Component)
+  - [ ] Prominent title: "Chainlink Functions Integration"
+  - [ ] Concise, static description (from script)
+  - [ ] Status indicator: "Status: In Development (Roadmap)"
+  - [ ] Tailwind styling to match dashboard
+- [ ] Integrate `ChainlinkFunctionsStatus.tsx` into `frontend/src/app/page.tsx`
+
+### Subsequent (High Priority)
+
+- [ ] Implement real API call in `frontend/src/components/PaymentDemo.tsx`
+      (`POST /httpayer`)
+- [ ] Ensure all data display in `Dashboard.tsx` and `PaymentDemo.tsx` matches
+      backend API response structures
+- [ ] Comprehensive testing of all frontend-backend interactions
+- [ ] Finalize UI polish and ensure cross-browser/device responsiveness
+
+### Final Step
+
+- [ ] Record the demo video with the script as reference
+
+---
+
+# (Legacy/Meta)
+
+- [x] Set up Next.js app with App Router and TypeScript
+- [x] Configure Tailwind CSS and global styles
+- [x] Add TanStack Query (react-query) for server state management
+- [x] Add wagmi/viem for wallet connection and signature support
 - [x] Develop payer server (src/server.ts)
 - [x] Develop treasury server (treasury/main.py)
 - [x] Develop facilitator server (facilitator/facilitator.py)
@@ -21,31 +57,9 @@ CCIP-Terminal and USDC across multiple EVM chains.
 - [x] Publish HTTPayer SDK to PyPi
 - [x] Develop HTTPayer Javascript/Typescript SDK
 - [x] Develop HTTPayer UI/frontend
-- [x] Set up Next.js app with App Router and TypeScript
-- [x] Configure Tailwind CSS and global styles
-- [x] Add TanStack Query (react-query) for server state management
-- [x] Add wagmi/viem for wallet connection and signature support
 - [ ] Config Vercel
 - [ ] Deploy HTTPayer frontend
 - [ ] Create `src/components/` directory for reusable UI components
-
-- [ ] Implement `Header` component (wallet connect, title, client component)
-- [ ] Implement `Dashboard` component (live balances, status, polling Treasury
-      API)
-- [ ] Implement `PaymentDemo` component (trigger/visualize x402 payment,
-      interact with Orchestration API)
-- [ ] Wire up TanStack Query for all backend data fetching (Treasury,
-      Orchestration)
-- [ ] Implement API integration per Backend Interaction Specifications in
-      `frontend/ARCHITECTURE.md`
-- [ ] Enforce type safety: define all API types in `src/types/`, use Zod schemas
-      in `src/schemas/`
-- [ ] Validate all environment variables at runtime (Zod)
-- [ ] Implement robust error handling and user-friendly error states
-- [ ] Add dark mode support via Tailwind (ensure `<html class="dark">`)
-- [ ] Reference and follow all rules in `.cursor/rules/` (state management,
-      styling, component structure, API interaction, wallet interaction, backend
-      contract, code generation)
 - [ ] Add README instructions for local dev, environment setup, and contributing
 - [ ] Polish UI/UX for demo (loading states, empty states, responsive design)
 - [ ] Prepare for Vercel deployment (env vars, config)
