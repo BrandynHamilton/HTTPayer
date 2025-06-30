@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Directives for how the HTTPayer frontend components should interact with the backend API services.
+alwaysApply: true
+---
+
+# API Interaction Rules
+
+## 1. Source of Truth: Backend Interaction Specifications
+
+-   **Rule:** The definitive and authoritative source for all backend API endpoints, request formats, headers, and expected response structures is the **"Backend Interaction Specifications"** section in `ARCHITECTURE.md#5-backend-interaction-specifications`.
+-   **Rule:** Any interaction with the backend services (HTTPayer Orchestration, Treasury) **must strictly adhere** to the specifications detailed in `ARCHITECTURE.md`.
+
+## 2. API Endpoint Usage
+
+-   **Rule:** Always construct backend API URLs using the environment variables defined for the respective services:
+    -   `NEXT_PUBLIC_HTTPAYER_API_URL` for the Node/Express HTTPayer Orchestration Service.
+    -   `NEXT_PUBLIC_TREASURY_API_URL` for the Python/Flask Treasury Service.
+-   **Avoid:** Hardcoding API URLs directly into components or helper functions.
+
+## 3. Data Fetching and Mutations (Client Components)
+
+-   **Tool:** `@tanstack/react-query`
+-   **Rule:** For all `GET` requests (data fetching) from the backend, **always** use `useQuery` from TanStack Query.
+-   **Rule:** For all `POST`/`PUT`/`DELETE` requests (data mutations), **always** use `useMutation` from TanStack Query.
+-   **Rule:** Ensure correct `queryKey` and `mutationKey` usage for caching, invalidation, and background updates.
+-   **Rule:** Utilize native `fetch` API or a lightweight wrapper (no heavy third-party HTTP clients like Axios unless explicitly justified) within `queryFn` or `mutationFn`.
+
+## 4. Request Payloads & Headers
+
+-   **Rule:** Request bodies (`payload`) for `POST`/`PUT` requests must precisely match the TypeScript types defined in `ARCHITECTURE.md` for each endpoint.
+-   **Rule:** The `HTTPayer Orchestration Service` requires an `x-api-key` header for authentication. **Always** include this header, retrieving the key from `process.env.NEXT_PUBLIC_HTTPAYER_API_KEY`.
+-   **Rule:** Ensure `Content-Type: application/json` is set for all JSON request bodies.
+
+## 5. Response Handling
+
+-   **Rule:** Frontend components must be prepared to handle the precise success response formats (including optional fields) as defined in `ARCHITECTURE.md`.
+-   **Rule:** Implement robust error handling for all API calls. This includes:
+    -   Leveraging TanStack Query's `isError` and `error` states for `useQuery`/`useMutation` hooks.
+    -   Anticipating and gracefully handling HTTP status codes (e.g., 400, 401, 500) and parsing the expected error body structures as per `ARCHITECTURE.md`.
+    -   Displaying user-friendly messages for API failures.
+
+## 6. Blockchain Abstraction Adherence
+
+-   **Rule:** Frontend components **must not** attempt to make direct RPC calls to blockchain nodes (e.g., via Alchemy, Infura, or raw `viem`/`ethers.js` RPC methods) for payment, token transfers, or treasury management.
+-   **Rule:** Any operation that requires on-chain interaction (beyond wallet connection and signing a message) **must** be delegated to the appropriate HTTPayer backend service. The frontend's role is to request the backend to perform these actions and then consume the backend's API responses regarding the result.

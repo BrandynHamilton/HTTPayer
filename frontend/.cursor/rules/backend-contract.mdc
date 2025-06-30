@@ -1,0 +1,40 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Rules for strictly adhering to the Backend Interaction Specifications documented in the ARCHITECTURE.md for the HTTPayer frontend.
+alwaysApply: true
+---
+
+# Backend API Contract Adherence Rules
+
+## 1. Single Source of Truth for API Contract
+
+-   **Rule:** The **sole and definitive source of truth** for all frontend-backend API interactions is the **"Backend Interaction Specifications"** section within `ARCHITECTURE.md#5-backend-interaction-specifications`.
+-   **Rule:** All frontend code that initiates or responds to communication with the HTTPayer Orchestration Service or the Treasury Service **must perfectly align** with the definitions in this section.
+-   **Avoid:** Making assumptions about API endpoints, request/response formats, or error structures. Always consult `ARCHITECTURE.md`.
+
+## 2. Request Conformance
+
+-   **Rule:** For every API call, the HTTP method (`GET`, `POST`, etc.), the endpoint path, and the full request payload (including required fields, optional fields, and their exact data types) **must match** what is specified in `ARCHITECTURE.md`.
+-   **Rule:** All necessary HTTP headers (e.g., `x-api-key`, `Content-Type`) **must be included** as documented for each endpoint.
+-   **Rule:** When generating or modifying code that sends data to the backend, the TypeScript types of the request objects **must correspond precisely** to the `type` definitions provided in `ARCHITECTURE.md`'s specifications.
+
+## 3. Response Conformance & Typing
+
+-   **Rule:** The frontend **must expect and correctly parse** the exact success response structures (JSON body, status code) as defined for each endpoint in `ARCHITECTURE.md`.
+-   **Rule:** All TypeScript types used to represent API responses in the frontend **must directly mirror** the `type` definitions or example JSON structures provided in `ARCHITECTURE.md`.
+-   **Rule:** The frontend **must implement comprehensive error handling** that anticipates and gracefully processes the specific error status codes and error body formats documented for each endpoint. This includes distinguishing between 400, 401, 500, and other relevant errors.
+
+## 4. Avoiding Out-of-Contract Interactions
+
+-   **Rule:** **Never** introduce new API calls or modify existing API interactions without first updating or verifying the `ARCHITECTURE.md`'s Backend Interaction Specifications.
+-   **Rule:** If a discrepancy is found between frontend code and `ARCHITECTURE.md`, the documentation in `ARCHITECTURE.md` is considered the authority, and the code must be updated to match, or a discussion must be initiated to formally update the contract.
+
+## 5. AI Guidance for Contract Adherence
+
+-   **Rule (for AI):** When generating or modifying code involving backend API calls, **always cross-reference** `ARCHITECTURE.md#5-backend-interaction-specifications` to ensure full compliance with the API contract.
+-   **Rule (for AI):** If the AI detects a potential mismatch between existing code and the documented contract, it **must flag this discrepancy** and ask for clarification before proceeding with changes.
+-   **Rule (for AI):** Prefer generating TypeScript interfaces/types directly from the `ARCHITECTURE.md`'s specifications if they are not already defined in the codebase.

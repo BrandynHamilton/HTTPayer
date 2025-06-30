@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Rules for managing wallet connection and interaction using wagmi and viem in the HTTPayer frontend, emphasizing backend delegation for on-chain actions.
+alwaysApply: true
+---
+
+# Wallet Interaction Rules
+
+## 1. Primary Tools: wagmi & viem
+
+-   **Rule:** **Always** use `wagmi` for managing wallet connection state, account information, and network details.
+-   **Rule:** `viem` should be used as the underlying client for `wagmi` for low-level interactions like creating clients or handling specific message signing.
+-   **Avoid:** Using other web3 libraries (e.g., `ethers.js`, `web3.js`) directly for wallet management or RPC interactions from the frontend. `wagmi` and `viem` are the established stack.
+
+## 2. Wallet Connection Lifecycle
+
+-   **Rule:** Handle wallet connection, disconnection, and account changes gracefully using `wagmi` hooks (`useAccount`, `useConnect`, `useDisconnect`).
+-   **Rule:** Provide clear UI feedback for connection status (connected/disconnected, connecting, network mismatch).
+-   **Rule:** Wallet connection should typically be initiated by user action (e.g., clicking a "Connect Wallet" button).
+
+## 3. Delegation of On-Chain Operations to Backend
+
+-   **Rule:** The frontend **must not** perform direct blockchain transactions (e.g., sending tokens, interacting with smart contracts) for payments or treasury management. These operations are explicitly handled by the HTTPayer backend services.
+-   **Rule:** The frontend's primary role in on-chain interaction is limited to:
+    1.  **Connecting the user's wallet.**
+    2.  **Requesting signatures** for messages (e.g., EIP-712, EIP-3009 as required by the x402 protocol) that are then submitted to the HTTPayer backend.
+-   **Rule:** Any signed message or data should be immediately sent to the appropriate backend API endpoint (as defined in `ARCHITECTURE.md#5-backend-interaction-specifications`) for on-chain processing.
+-   **Avoid:** Using `wagmi`'s `useSendTransaction`, `useWriteContract`, or `usePrepareSendTransaction` hooks for HTTPayer's payment flows.
+
+## 4. Message Signing
+
+-   **Rule:** When the backend requires a message signature (e.g., for x402 protocol validation), use `wagmi`'s `useSignMessage` or `useSignTypedData` (for EIP-712/EIP-3009) hooks.
+-   **Rule:** The raw signature and the original message/payload should be passed to the backend API for verification and subsequent on-chain action.
+
+## 5. Error Handling
+
+-   **Rule:** Implement robust error handling for wallet interactions (e.g., user rejects connection, transaction, or signature request; wallet not detected).
+-   **Guideline:** Display user-friendly error messages that guide the user to resolve common wallet-related issues.
