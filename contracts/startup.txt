@@ -1,0 +1,11 @@
+npm install
+node scripts/request.js
+
+Invoke-WebRequest -Uri http://localhost:30001/httpayer `
+  -Method POST `
+  -Headers @{
+    "Content-Type" = "application/json"
+    "x-api-key"    = "chainlinkhack2025"
+  } `
+  -Body '{"api_url":"http://localhost:5036/base-weather","method":"GET"}'
+

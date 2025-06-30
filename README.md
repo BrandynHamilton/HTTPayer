@@ -21,7 +21,7 @@ CCIP-Terminal and USDC across multiple EVM chains.
   - [x] demo servers
 - [x] Develop HTTPayer UI/frontend
 - [ ] Deploy HTTPayer frontend
-- [ ] Develop/Deploy Chainlink Function for onchain usage
+- [x] Develop/Deploy Chainlink Function for onchain usage
 - [x] Publish HTTPayer SDK to PyPi
 - [x] Develop HTTPayer Javascript/Typescript SDK
 - [ ] Publish HTTPayer SDK to NPM
@@ -79,3 +79,8 @@ HTTPayer integrates with **Chainlink Functions** to allow smart contracts to:
 This enables on-chain logic to securely interact with off-chain monetized APIs through decentralized compute and automated cross-chain stablecoin payments.
 
 ---
+
+## Deployments
+
+- HTTPayer Account Address: [0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab](https://sepolia.basescan.org/address/0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab)
+- HTTPayer Consumer Smart Contract: [0xa7ee479017AEcA4fa8844cAe216678F6989FF002](https://sepolia.basescan.org/address/0x338937Ab9453eA2381c49C8b64E2dD2830915793)
