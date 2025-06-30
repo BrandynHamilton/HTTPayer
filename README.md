@@ -60,8 +60,8 @@ CCIP-Terminal and USDC across multiple EVM chains.
 - [x] Create `src/components/` directory for reusable UI components
 - [x] Add README instructions for local dev, environment setup, and contributing
 - [x] Install Tailwind CSS
-- [ ] Config Vercel
-- [ ] Deploy HTTPayer frontend first iteration
+- [x] Config Vercel
+- [x] Deploy HTTPayer frontend first iteration
 - [ ] Vibe on!
 - [ ] Polish UI/UX
 - [ ] (Optional) Add manual cross-chain transfer demo (Treasury API)
