@@ -80,6 +80,7 @@ A gate/decorator for protecting Web2 API routes using x402 payment authorization
 ```python
 from httpayer import X402Gate
 from web3 import Web3
+from flask import Flask, request, jsonify, make_response
 
 gate = X402Gate(
     pay_to="0xYourReceivingAddress",
@@ -91,19 +92,40 @@ gate = X402Gate(
     facilitator_url="https://x402.org"
 )
 
-@gate.gate
-def protected_resource(request_data):
-    return {
-        "status": 200,
-        "headers": {},
-        "body": {"message": "Access granted."}
-    }
+def create_app():
+    app = Flask(__name__)
 
-# Call using:
-response = protected_resource({
-    "headers": {"X-Payment": "<base64 header>"},
-    "url": "http://your-api.com/protected"
-})
+    @app.route("/health")
+    def health():
+        return "OK", 200
+
+    @app.route('/')
+    def index():
+        return "<h1>Demo Weather Server</h1><p>Welcome to the Demo Weather Server!</p>"
+
+    @app.route("/weather")
+    def weather():
+        request_data = {
+            "headers": dict(request.headers),
+            "url": request.base_url
+        }
+
+        @gate.gate
+        def protected(_request_data):
+            return {
+                "status": 200,
+                "headers": {},
+                "body": {
+                    "weather": "sunny",
+                    "temp": 75
+                }
+            }
+
+        result = protected(request_data)
+
+        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
+
+    return app
 ```
 
 ---
