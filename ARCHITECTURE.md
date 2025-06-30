@@ -5,7 +5,9 @@
 The HTTPayer backend is a modular, multi-language system designed to automate
 and manage stablecoin payments (USDC) using the x402 protocol. It enables
 seamless HTTP 402 Payment Required flows for Web2/Web3 applications, supporting
-multi-chain operations and composable integration via SDKs.
+multi-chain operations and composable integration via SDKs. The project now
+includes a `packages/` directory containing both Python and TypeScript SDKs,
+with the Python SDK published to PyPI.
 
 ---
 
@@ -35,12 +37,17 @@ multi-chain operations and composable integration via SDKs.
   - `treasury/cli.py`: CLI for treasury operations and wallet management.
 - **Facilitator Service (Flask):**
   - `facilitator/facilitator.py`: Protocol logic for payment verification and
-    settlement, supports multiple chains.
+    settlement. **A dedicated facilitator instance is deployed for each
+    supported chain (e.g., Avalanche Fuji requires its own facilitator with
+    chain-specific configuration, as the default x402 facilitator only supports
+    Base Sepolia).**
 - **Demo Server (Flask):**
   - `x402_servers/x402_server.py`: Example endpoints for x402 payment flows.
-- **Python SDK:**
-  - `httpayer/`: Client and decorator classes for integrating x402 payment logic
-    into Python apps.
+- **SDKs (in `packages/`):**
+  - **Python SDK:** `packages/python/httpayer/` – Client and decorator classes
+    for integrating x402 payment logic into Python apps. Published to PyPI.
+  - **TypeScript SDK:** `packages/typescript/httpayer-ts/` – Comprehensive SDK
+    for Node.js/Express and frontend integration.
 - **Tests:**
   - `tests/`, `treasury/tests/`: Usage examples and integration tests.
 
@@ -56,10 +63,10 @@ multi-chain operations and composable integration via SDKs.
 - **Facilitator:**
   - `facilitator.py`: `/verify` and `/settle` endpoints for payment proof and
     on-chain settlement.
-- **SDK:**
-  - `client.py`: `HttPayerClient` for programmatic payment flows.
-  - `gate.py`: `X402Gate` decorator for 402-gated endpoints.
-  - `core.py`: EIP-712/EIP-3009 signing, payment header encoding/decoding.
+- **SDKs:**
+  - Python: `packages/python/httpayer/` (see also `packages/python/README.md`)
+  - TypeScript: `packages/typescript/httpayer-ts/` (see also
+    `packages/typescript/httpayer-ts/README.md`)
 - **ABI:**
   - `abi/erc20.json`: ERC20 ABI for on-chain contract interaction.
 
@@ -87,11 +94,14 @@ multi-chain operations and composable integration via SDKs.
 ### C. Extensibility
 
 - **Multi-chain:** Facilitator and treasury support multiple EVM chains (Base,
-  Avalanche, etc.).
-- **SDKs:** Python SDK (`httpayer/`), planned JS/TS SDK
-  (`src/types/x402-fetch.d.ts`).
+  Avalanche, etc.). **Adding a new chain may require deploying a new facilitator
+  instance with chain-specific logic and configuration.**
+- **SDKs:** Python SDK (`packages/python/httpayer/`), TypeScript SDK
+  (`packages/typescript/httpayer-ts/`).
 - **Demo/Test:** Example servers and test scripts for integration and
   onboarding.
+- **Chainlink Function:** Ongoing work to enable on-chain invocation of HTTPayer
+  payment flows via Chainlink Functions.
 
 ---
 
@@ -104,8 +114,10 @@ multi-chain operations and composable integration via SDKs.
     `treasury/liquidity.py`
 - **Facilitator:**
   - `facilitator/facilitator.py`
-- **SDK:**
-  - `httpayer/client.py`, `httpayer/gate.py`, `httpayer/core.py`
+- **SDKs:**
+  - Python: `packages/python/httpayer/`, `packages/python/README.md`
+  - TypeScript: `packages/typescript/httpayer-ts/`,
+    `packages/typescript/httpayer-ts/README.md`
 - **Demo/Test:**
   - `x402_servers/x402_server.py`, `tests/`, `treasury/tests/`
 - **ABI:**
@@ -129,10 +141,15 @@ multi-chain operations and composable integration via SDKs.
 
 ## 6. Extending & Integrating
 
-- **Add new chains:** Update facilitator and treasury logic.
-- **Integrate SDK:** Use Python SDK for 402-gated endpoints or payment
-  automation.
+- **Add new chains:** Update facilitator and treasury logic. **For some chains,
+  this means deploying a new facilitator instance with chain-specific
+  configuration (e.g., Avalanche Fuji).**
+- **Integrate SDK:** Use Python SDK (published to PyPI) for 402-gated endpoints
+  or payment automation. Use TypeScript SDK for Node.js/Express or frontend
+  integration.
 - **Frontend:** Planned minimalist UI for human-in-the-loop payments.
+- **Chainlink Function:** Ongoing work to enable smart contracts to trigger
+  HTTPayer payments via Chainlink Functions.
 
 ---
 
@@ -140,3 +157,5 @@ multi-chain operations and composable integration via SDKs.
 
 - See `backend/README.md` for setup, usage, and endpoint details.
 - See `PRD.md` for product requirements and roadmap.
+- See `packages/python/README.md` and
+  `packages/typescript/httpayer-ts/README.md` for SDK usage.

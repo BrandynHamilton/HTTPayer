@@ -2,13 +2,19 @@
 
 The HTTPayer backend consists of two coordinated services:
 
-1. **TypeScript (Node.js/Express)** – Implements an HTTP endpoint to auto-pay `402 Payment Required` requests using the x402 protocol and EIP-3009 signatures.
-2. **Python (Flask)** – Provides Chainlink CCIP-powered treasury operations for cross-chain USDC transfers and gas estimation logic.
+1. **TypeScript (Node.js/Express)** – Implements an HTTP endpoint to auto-pay
+   `402 Payment Required` requests using the x402 protocol and EIP-3009
+   signatures.
+2. **Python (Flask)** – Provides Chainlink CCIP-powered treasury operations for
+   cross-chain USDC transfers and gas estimation logic.
 
-Additionally, there are several other servers necessary for demos and multi-chain funcionality:
+Additionally, there are several other servers necessary for demos and
+multi-chain functionality:
 
-1. **Facilitator Server (Flask)** - Enables x402 usage on Avalanche.
-2. **x402 Demo Server (Flask)** - An endpoint for HTTPayer tests and demos which can handle both Base Sepolia and Avalanche Fuji x402 processes.
+1. **Facilitator Server (Flask)** - Enables x402 usage on Avalanche and other
+   EVM chains via dedicated facilitator instances.
+2. **x402 Demo Server (Flask)** - An endpoint for HTTPayer tests and demos which
+   can handle both Base Sepolia and Avalanche Fuji x402 processes.
 
 The backend is currently deployed to Akash; links can be found below.
 
@@ -32,14 +38,14 @@ backend/
 │   ├── demoServer.ts     # Demo weather API protected by x402
 │   └── types/            # Custom TS types
 ├── tests/
-|   |── test1.py          # W.I.P. Python payment client API
-|   |── test2.py          # Calls 402 endpoint w/ HTTPayer
+|   ├── test1.py          # W.I.P. Python payment client API
+|   ├── test2.py          # Calls 402 endpoint w/ HTTPayer
 ├── dist/                 # Compiled JS from `tsc`
 ├── treasury/             # Python CCIP + treasury server
-│   |── main.py
+│   ├── main.py
 |   └── cli.py
 ├── facilitator/          # Facilitator server
-|   |── facilitator.py
+|   └── facilitator.py
 ├── httpayer_core/        # HTTPayer core Python scripts
 ├── abi/                  # ERC-20 ABI
 ├── Dockerfile            # Backend container spec
@@ -47,6 +53,13 @@ backend/
 ├── tsconfig.json         # TypeScript compiler config
 ├── pyproject.toml        # Python dependencies
 └── README.md
+packages/
+├── python/
+│   ├── httpayer/         # Python SDK (published to PyPI)
+│   └── README.md
+├── typescript/
+│   ├── httpayer-ts/      # TypeScript SDK
+│   └── README.md
 ```
 
 ---
@@ -192,6 +205,15 @@ x-api-key: YOUR_HTTPAYER_API_KEY
 
 ---
 
+## SDKs
+
+- **Python SDK:** Located in `packages/python/httpayer/`, published to PyPI. See
+  `packages/python/README.md` for usage and examples.
+- **TypeScript SDK:** Located in `packages/typescript/httpayer-ts/`. See
+  `packages/typescript/httpayer-ts/README.md` for usage and examples.
+
+---
+
 ## Tests
 
 The `tests` directory provides examples of how to use the HTTPayer API.
@@ -207,12 +229,20 @@ The `tests` directory provides examples of how to use the HTTPayer API.
 
 ## Notes
 
-- `src/server.ts` coordinates payment flows while `treasury/main.py` ensures liquidity is available via CCIP.
-
-- `facilitator/facilitator.py` was created because the default facilitator server for the x402 protocol only supports base sepolia. The facilitator we deploy here supports avalanche fuji.
+- `src/server.ts` coordinates payment flows while `treasury/main.py` ensures
+  liquidity is available via CCIP.
+- `facilitator/facilitator.py` was created because the default facilitator
+  server for the x402 protocol only supports base sepolia. The facilitator we
+  deploy here supports avalanche fuji and other EVM chains as needed.
+- The SDKs in `packages/` enable integration with both Python and
+  TypeScript/JavaScript applications. The Python SDK is published to PyPI for
+  easy installation.
+- Ongoing work: Chainlink Function integration to enable smart contracts to
+  trigger HTTPayer payments.
 
 ---
 
 ## Credits
 
-Built for composable Web2↔Web3 infrastructure using Chainlink CCIP, x402, and EIP-3009 token standards.
+Built for composable Web2↔Web3 infrastructure using Chainlink CCIP, x402, and
+EIP-3009 token standards.
