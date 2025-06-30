@@ -3,16 +3,11 @@
 // IMPORTANT: Run `ts-node src/demoServer.ts` in another terminal before running this script.
 
 import "dotenv/config";
-import { DEMO_SERVER_URL, HTTPAYER_URL } from "./vars";
-
-// The API key is now loaded from the environment
-const API_KEY = process.env.HTTPAYER_API_KEY;
-
-if (!API_KEY) {
-    throw new Error(
-        "HTTPAYER_API_KEY is not set. Please create a .env file in the /frontend directory.",
-    );
-}
+import {
+    API_KEY,
+    DEMO_SERVER_URL,
+    HTTPAYER_URL,
+} from "../src/constants/endpoints";
 
 // The demo server has a /avalanche-weather endpoint that requires payment
 const TARGET_402_API_URL = `${DEMO_SERVER_URL}/avalanche-weather`;
@@ -59,7 +54,7 @@ async function test402PaymentFlow() {
             );
         }
     } catch (error) {
-        console.error("An error occurred during the test:", error);
+        console.error("An error occurred during the fetch operation:", error);
     }
 }
 
