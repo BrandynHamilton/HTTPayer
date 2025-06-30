@@ -159,27 +159,6 @@ http POST http://localhost:31157/httpayer \
 
 ---
 
-## Development
-
-### Build & Publish
-
-```bash
-uv venv
-uv sync
-python -m build
-twine upload dist/*
-```
-
-### Optional Dev Tools
-
-Install development extras:
-
-```bash
-pip install .[dev]
-```
-
----
-
 ## Project Structure
 
 ```
@@ -191,7 +170,7 @@ tests/
 ├── test1.py             # Client-based demo
 ├── test2.py             # Flask server demo
 .env.sample              # Environment config template
-pyproject.toml           # Build config (PEP 621)
+pyproject.toml
 README.md
 ```
 
