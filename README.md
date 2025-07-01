@@ -145,10 +145,47 @@ multiple chains and environments.
   `HttpayerClient` for 402 handling in Node.js/browser and `X402Gate` middleware
   for Express.js, plus EIP-712/EIP-3009 signing utilities.
 
-**⛓️ Smart Contract Integration**
+**⛓️ Smart Contract Integration (Chainlink Functions)**
 
-- **Chainlink Functions:** Allows smart contracts to trigger HTTPayer payment
-  flows and consume paid APIs on-chain.
+HTTPayer leverages [Chainlink Functions](https://chain.link/functions) to bridge
+the gap between smart contracts and paid off-chain APIs. This serverless
+developer platform enables smart contracts to:
+
+- **Trigger HTTPayer Payments:** Smart contracts can programmatically initiate
+  x402 payments through the HTTPayer backend, enabling automated payment flows
+  without manual intervention.
+- **Access Monetized Data:** Consume valuable gated APIs that require payment,
+  including:
+  - **Financial Data:** Credit scores, bank balance proofs, financial
+    attestations
+  - **Real-World Events:** Weather data, IoT sensor readings, sports results
+  - **Enterprise Systems:** ERP data, supply chain information, compliance
+    records
+  - **AI/ML Services:** Model inference results, data analysis, predictions
+
+**How it Works:**
+
+1. Smart contract makes a request to Chainlink Functions with API endpoint and
+   payment parameters
+2. Chainlink's Decentralized Oracle Network (DON) executes the HTTPayer payment
+   flow
+3. Each node independently fetches data and processes the payment via x402
+4. Nodes reach consensus on the result using OCR 2.0
+5. Final data is returned on-chain with cryptographic proof of authenticity
+
+**Key Benefits:**
+
+- **Trust-Minimized:** Decentralized execution ensures no single point of
+  failure
+- **Secure Secrets:** API keys and credentials are encrypted using threshold
+  encryption
+- **Custom Computation:** Transform and aggregate data before returning on-chain
+- **Gas Efficient:** Offload complex computations to Chainlink's serverless
+  infrastructure
+
+This integration enables sophisticated use cases like parametric insurance,
+dynamic NFTs, automated trading strategies, and enterprise blockchain
+applications that require real-world data access.
 
 **🌐 Supported Networks**
 
@@ -159,6 +196,22 @@ multiple chains and environments.
 
 **🚀 Deployment** All services are containerized and deployed to production. See
 backend documentation for live endpoints and setup instructions.
+
+## Deployments
+
+### Service Endpoints
+
+- **HTTPayer Server:** http://provider.boogle.cloud:31157/httpayer
+- **Treasury Server:** http://provider.boogle.cloud:32279/treasury
+- **Facilitator Server:** http://provider.boogle.cloud:32179
+- **Demo Server:** http://provider.akash-palmito.org:30862
+
+### On-Chain Deployments
+
+- **HTTPayer Account Address:**
+  [0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab](https://sepolia.basescan.org/address/0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab)
+- **HTTPayer Consumer Smart Contract:**
+  [0x338937Ab9453eA2381c49C8b64E2dD2830915793](https://sepolia.basescan.org/address/0x338937Ab9453eA2381c49C8b64E2dD2830915793)
 
 ## Learn More
 
