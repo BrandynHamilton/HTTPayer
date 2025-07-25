@@ -1,184 +1,71 @@
-# Product Requirements Document
+# Product Requirements Document (PRD): HTTPayer
 
-**HTTPayer**
+**Version:** 0.0.1\
+**Status:** DRAFT\
+**Owner:** Brandyn Hamilton\
+**Target Release:** v0.0.1
 
-### The problem it solves
+## 1. Background & Strategic Fit
 
-The current landscape of onchain payments and monetization is fragmented,
-complex, and often inaccessible to both developers and end users. Traditional
-payment systems are ill-suited for microtransactions, cross-chain value
-transfer, and the programmable finance required by modern DeFi, tokenization,
-and AI-driven applications. Developers face high integration barriers, limited
-interoperability, and a lack of secure, automated solutions for monetizing APIs
-and digital services.
+HTTPayer enables automated, cross-chain stablecoin payments for APIs, agents,
+and smart contracts using the x402 protocol and Chainlink CCIP. It bridges
+Web2/Web3, allowing seamless monetization and programmable payments for digital
+services.
 
-HTTPayer solves these challenges by providing a unified, secure, and
-developer-friendly platform for onchain payments and monetization. Leveraging
-the x402 protocol, EIP-3009 signatures, and Chainlink CCIP, HTTPayer enables
-seamless, automated, and cross-chain payments for API calls and digital
-services. The current deployment targets are the Base Sepolia and Avalanche Fuji
-(C-Chain) testnets, ensuring robust support for multi-chain development and
-testing. This unlocks new possibilities for pay-per-use business models,
-decentralized applications, and AI agent interactions—without relying on legacy
-payment processors or centralized intermediaries.
+## 2. Goals & Objectives
 
-By abstracting away the complexity of crypto payments, HTTPayer empowers
-developers to easily integrate stablecoin (USDC) microtransactions across
-multiple EVM chains, opening the door to a new era of global, permissionless,
-and composable onchain finance. The platform is designed to be extensible,
-supporting future innovations in DeFi, tokenized assets, and cross-chain
-interoperability, and positioning itself as a foundational layer for the next
-generation of Web3 and AI-powered economies.
+- Monetize APIs and digital services with stablecoin paywalls
+- Automate payments and abstract wallet UX for users/agents
+- Enable cross-chain liquidity/payments (Chainlink CCIP)
+- Allow smart contracts to consume paid APIs (Chainlink Functions)
+- Provide developer-friendly SDKs (Python, TypeScript)
 
-### Challenges We Ran Into
+## 3. Requirements & User Stories
 
-During development, we encountered several notable challenges that shaped the
-evolution of HTTPayer's architecture and implementation:
+| # | Title                 | Description                                           | Priority    |
+| - | --------------------- | ----------------------------------------------------- | ----------- |
+| 1 | API Monetization      | Providers require stablecoin payment for API access   | Must Have   |
+| 2 | Automated Payments    | Users/agents pay for APIs without manual wallet steps | Must Have   |
+| 3 | Cross-chain Liquidity | Accept payments from multiple EVM chains              | Must Have   |
+| 4 | Smart Contract Access | Contracts trigger paid API calls and receive data     | Should Have |
+| 5 | Developer SDKs        | Easy-to-use SDKs for Python/TypeScript                | Must Have   |
+| 6 | Dashboard & Demo UI   | Web UI for wallet connect, balances, and payment demo | Should Have |
 
-**EIP-3009 Messaging in Python**\
-Our initial approach was to implement EIP-3009 messaging in Python, aiming for a
-unified backend. However, we found that Python's ecosystem lacked robust
-libraries and tooling for EIP-3009 and related Ethereum signature standards.
-This led to recurring issues with message encoding and signature verification,
-which risked the reliability of payment flows. To address this, we rewrote the
-primary payment orchestration server in TypeScript, leveraging the mature
-Ethereum tooling available in the Node.js ecosystem. This decision significantly
-improved our ability to handle x402 protocol flows and ensured compatibility
-with EIP-712 and EIP-3009 standards.
+## 4. User Interaction & Design
 
-**Initial Deployment Issues**\
-Deploying the early versions of HTTPayer surfaced several operational
-challenges, including environment inconsistencies and dependency conflicts
-between the TypeScript and Python services. These issues occasionally led to
-service downtime and complicated the deployment pipeline. By consolidating
-critical payment logic in TypeScript and containerizing all services, we
-achieved a more stable and reproducible deployment process, as documented in our
-architecture and backend guides.
+- **Frontend:** Next.js/Tailwind dashboard for wallet connect, live balances,
+  payment demo
+- **SDKs:** Python (decorator/client), TypeScript (middleware/client)
+- **API:** `/httpayer`, `/treasury/*`, `/facilitator/*` endpoints
+- See [frontend/ARCHITECTURE.md](frontend/ARCHITECTURE.md) for UI/UX details
 
-**Avalanche Integration**\
-Integrating Avalanche Fuji as a supported chain was a key milestone. While the
-process was smoother than anticipated, it required the development of a custom
-facilitator service. The default x402 facilitator was designed for Base Sepolia
-and did not support Avalanche's network parameters or consensus specifics. By
-implementing a dedicated facilitator server for Avalanche, we ensured seamless
-multi-chain support and future extensibility for additional EVM-compatible
-networks.
+## 5. Open Questions
 
-### Onchain Finance
+- How to best support new EVM chains? (facilitator/treasury updates)
+- Chainlink Functions reliability for on-chain triggers?
+- Future fiat onramp integration?
+- Error handling and retries for failed payments?
 
-**How does this project fit within the track?**
+## 6. Out of Scope
 
-HTTPayer is purpose-built for the Onchain Finance track, directly addressing the
-core requirements for Chainlink hackathon eligibility and competitiveness. It
-establishes a direct, peer-to-peer payment system for digital services, with all
-transactions settled entirely on-chain using stablecoins (USDC) and the x402
-protocol. By integrating Chainlink CCIP, HTTPayer enables secure, automated, and
-cross-chain USDC transfers, making it possible to build new DeFi protocols,
-cross-chain lending/borrowing, and tokenized asset flows.
+- Native mobile app (web UI only)
+- Non-EVM chain support (future)
+- Fiat onramp/offramp (future)
+- Manual payment flows (fully automated)
 
-The backend Treasury service leverages Chainlink CCIP to manage on-chain funds,
-burn rates, and liquidity across multiple EVM chains, ensuring composability and
-extensibility for DeFi and tokenization use cases. Ongoing work on Chainlink
-Functions integration will allow smart contracts to trigger HTTPayer payment
-flows, further expanding the project's onchain automation and composability.
-HTTPayer also provides SDKs (Python and TypeScript) for easy integration and
-extensibility, allowing other developers to build on top of the platform. The
-architecture is designed to support future integration with additional Chainlink
-services, such as Automation and Data Feeds, further enhancing its capabilities
-and alignment with the track's bonus criteria.
+## 7. Success Metrics
 
-By abstracting away the complexity of onchain payments and liquidity, HTTPayer
-empowers developers to build the next generation of DeFi and tokenization
-applications, making it a strong and extensible fit for the Onchain Finance
-track.
+- Number of APIs/paywalls integrated
+- Successful cross-chain payments
+- SDK adoption (PyPI/npm downloads)
+- Smart contract usage via Chainlink Functions
+- User/agent satisfaction with payment UX
 
-### Cross-Chain Solutions
+## 8. References
 
-**How does this project fit within the track?**
-
-HTTPayer is purpose-built for a multi-chain world, directly addressing the
-Cross-Chain Solutions track. At its core, HTTPayer uses Chainlink CCIP to enable
-seamless, secure, and automated USDC transfers across multiple EVM chains (e.g.,
-Base Sepolia, Avalanche Fuji). This allows users and protocols to move liquidity
-and value between chains without friction, unlocking new cross-chain DeFi
-primitives such as:
-
-- Cross-chain DEXs and lending/borrowing protocols
-- Multi-chain payment flows for API services and digital goods
-- Tokenization and transfer of RWAs and game assets across chains
-
-The backend Treasury service, powered by Chainlink CCIP, manages on-chain funds,
-burn rates, and liquidity across chains, ensuring that assets can be
-programmatically moved and utilized wherever needed. Ongoing work on Chainlink
-Functions integration will allow smart contracts to trigger HTTPayer payment
-flows, further enhancing cross-chain composability and automation.
-
-This architecture not only meets but exceeds the track's requirements by:
-
-- Using Chainlink CCIP to make onchain state changes and enable true
-  interoperability
-- Providing SDKs (Python and TypeScript) for easy integration into any
-  cross-chain dApp or protocol
-- Laying the foundation for future expansion into additional Chainlink services
-  (e.g., Automation, Data Feeds) for bonus points
-
-By abstracting away the complexity of cross-chain payments and liquidity,
-HTTPayer empowers developers to build the next generation of cross-chain DeFi,
-gaming, and tokenization applications—making it a strong fit for the Cross-Chain
-Solutions track.
-
-### Avalanche Track
-
-**How does this project fit within the track?**
-
-HTTPayer is fully deployed and operational on Avalanche Fuji (C-Chain testnet),
-meeting the core requirement for the Avalanche track. The project leverages
-Avalanche's high throughput, low fees, and EVM compatibility to deliver
-seamless, onchain payments and cross-chain DeFi infrastructure. By deploying a
-dedicated Facilitator server and smart contracts on Avalanche C-Chain, HTTPayer
-enables high-frequency microtransactions, automated agent interactions, and
-composable DeFi and tokenization use cases—all natively on Avalanche.
-
-The architecture is designed for extensibility, allowing for future deployment
-on custom Avalanche L1s and integration with additional Avalanche-native
-features. HTTPayer's modular SDKs (Python and TypeScript) make it easy for other
-developers to build on Avalanche, whether for DeFi, NFTs, gaming, or
-infrastructure tooling. The project also integrates Chainlink CCIP and is
-actively working toward supporting Chainlink Functions and VRF, further
-enhancing its capabilities for onchain finance and cross-chain interoperability.
-
-By abstracting away the complexity of onchain payments and liquidity, HTTPayer
-empowers the Avalanche ecosystem to build the next generation of decentralized
-applications. The project is not only technically robust and innovative, but
-also positioned for real-world adoption and future growth within the Avalanche
-and broader Web3 community.
-
-### Technical Architecture Overview
-
-HTTPayer is built as a modular, multi-language system comprising several key
-components. The current deployment targets are Base Sepolia and Avalanche Fuji
-(C-Chain) testnets:
-
-- **TypeScript Service (Node.js/Express):** The main payment client API
-  (`backend/src/server.ts`) that intercepts HTTP 402 responses and orchestrates
-  the payment process.
-- **Python Treasury Service (Flask):** Manages on-chain funds, burn rates,
-  liquidity, and Chainlink CCIP-powered cross-chain transfers
-  (`backend/treasury/main.py`).
-- **Facilitator Service (Flask):** Handles the core x402 protocol logic for
-  payment verification and on-chain settlement
-  (`backend/facilitator/facilitator.py`), supporting multiple chains with
-  dedicated facilitator instances as needed.
-- **Python SDK:** Located in `packages/python/httpayer/`, provides client and
-  decorator classes for integrating x402 payment logic into Python applications,
-  enabling 402-gated endpoints and programmatic payment flows. The Python SDK is
-  published to PyPI.
-- **TypeScript SDK:** Located in `packages/typescript/httpayer-ts/`, a
-  comprehensive SDK for automatic 402 handling, multi-chain support, EIP-712
-  signing, and Express.js integration.
-- **Chainlink Function:** Ongoing work to enable smart contracts to trigger
-  HTTPayer payments via Chainlink Functions.
-
-This architecture ensures a flexible, scalable, and secure system for automated
-crypto payments on Base Sepolia and Avalanche Fuji (C-Chain) testnets, with a
-clear path to mainnet and additional chain support.
+- [README.md](./README.md) — Overview and value
+- [backend/README.md](./backend/README.md) — Backend setup/endpoints
+- [frontend/ARCHITECTURE.md](frontend/ARCHITECTURE.md) — Frontend design
+- [packages/python/README.md](./packages/python/README.md) — Python SDK
+- [packages/typescript/httpayer-ts/README.md](./packages/typescript/httpayer-ts/README.md)
+  — TypeScript SDK

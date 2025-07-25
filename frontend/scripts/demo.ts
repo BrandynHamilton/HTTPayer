@@ -8,19 +8,13 @@
 
 // --- Configuration ---
 import "dotenv/config";
-import { DEMO_SERVER_URL, HTTPAYER_URL } from "./vars";
-
-// The API key is now loaded from the environment
-const API_KEY = process.env.HTTPAYER_API_KEY;
-
-if (!API_KEY) {
-    throw new Error(
-        "HTTPAYER_API_KEY is not set. Please create a .env file in the /frontend directory.",
-    );
-}
+import {
+    API_KEY,
+    DEMO_SERVER_URL,
+    HTTPAYER_URL,
+} from "../src/constants/endpoints";
 
 // --- Data for the target API ---
-// We'll use the deployed demo server for this example.
 const TARGET_API_URL = `${DEMO_SERVER_URL}/base-weather`;
 const TARGET_METHOD = "GET";
 const TARGET_PAYLOAD = {};
@@ -31,12 +25,15 @@ async function testHttpayerEndpoint() {
     console.log(`Proxying a ${TARGET_METHOD} request to: ${TARGET_API_URL}`);
 
     try {
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+        };
+        if (API_KEY) {
+            headers["x-api-key"] = API_KEY;
+        }
         const response = await fetch(HTTPAYER_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-api-key": API_KEY,
-            },
+            headers,
             body: JSON.stringify({
                 api_url: TARGET_API_URL,
                 method: TARGET_METHOD,

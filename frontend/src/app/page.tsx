@@ -1,48 +1,18 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { Dashboard } from "../components/Dashboard";
+import ChainlinkFunctionsStatus from "../components/ChainlinkFunctionsStatus";
+import { PaymentDemo } from "../components/PaymentDemo";
 
-function App() {
-	const account = useAccount();
-	const { connectors, connect, status, error } = useConnect();
-	const { disconnect } = useDisconnect();
-
+export default function Page() {
 	return (
-		<>
-			<div>
-				<h2>Account</h2>
-
-				<div>
-					status: {account.status}
-					<br />
-					addresses: {JSON.stringify(account.addresses)}
-					<br />
-					chainId: {account.chainId}
-				</div>
-
-				{account.status === "connected" && (
-					<button type="button" onClick={() => disconnect()}>
-						Disconnect
-					</button>
-				)}
-			</div>
-
-			<div>
-				<h2>Connect</h2>
-				{connectors.map((connector) => (
-					<button
-						key={connector.uid}
-						onClick={() => connect({ connector })}
-						type="button"
-					>
-						{connector.name}
-					</button>
-				))}
-				<div>{status}</div>
-				<div>{error?.message}</div>
-			</div>
-		</>
+		<main className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-4 gap-8">
+			<section className="w-full max-w-5xl flex flex-col gap-8">
+				<h1 className="text-3xl font-bold mb-2 text-center">HTTPayer Demo</h1>
+				<Dashboard />
+				<PaymentDemo />
+				<ChainlinkFunctionsStatus />
+			</section>
+		</main>
 	);
 }
-
-export default App;

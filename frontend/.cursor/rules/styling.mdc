@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines and rules for styling the HTTPayer frontend using Tailwind CSS.
+alwaysApply: true
+---
+
+# Styling Rules
+
+## 1. Primary Styling Tool: Tailwind CSS
+
+-   **Rule:** **Always** use [Tailwind CSS](https://tailwindcss.com/) utility classes for all component styling within the HTTPayer frontend.
+-   **Rule:** Apply classes directly within the JSX elements.
+-   **Avoid:** Writing custom CSS in separate `.css` or `.scss` files.
+-   **Avoid:** Using inline styles (`style={{ ... }}`) unless absolutely necessary for dynamic, calculated values that cannot be expressed with Tailwind classes (e.g., dynamic `transform` values). Such cases require explicit justification.
+
+## 2. Global Styles
+
+-   **Rule:** The `src/app/globals.css` file is reserved exclusively for:
+    -   Tailwind CSS directives (`@tailwind base;`, `@tailwind components;`, `@tailwind utilities;`).
+    -   Any truly global base styles (e.g., `body` typography, dark mode background defaults) that cannot be applied via component classes.
+-   **Avoid:** Adding component-specific or layout-specific styles to `globals.css`.
+
+## 3. Conditional Styling
+
+-   **Tool:** `clsx` (or similar utility like `classnames`)
+-   **Rule:** For conditionally applying Tailwind classes based on state or props, **always** use the `clsx` utility for clarity and maintainability.
+    -   *Example:* `<button className={clsx("py-2 px-4 rounded", isActive && "bg-blue-500 text-white")}>`
+
+## 4. Dark Mode Implementation
+
+-   **Rule:** The application supports dark mode via Tailwind CSS's `darkMode: 'class'` configuration.
+-   **Rule:** Design components to automatically adapt to dark mode using Tailwind's `dark:` prefix where necessary (e.g., `dark:bg-gray-800 dark:text-white`).
+-   **Rule:** Ensure the `<html>` tag in `src/app/layout.tsx` is initialized with `className="dark"` to enable dark mode by default.
+
+## 5. Design Consistency
+
+-   **Guideline:** Strive for visual consistency across the application. Reuse common spacing, typography, and color utility classes defined by Tailwind's default theme or any custom extensions in `tailwind.config.ts`.
+-   **Guideline:** Prefer using semantic colors (e.g., `text-primary`, `bg-card`) if a custom design system token layer is introduced in `tailwind.config.ts`, over direct color values (e.g., `text-blue-500`). For this project, direct Tailwind colors are acceptable.

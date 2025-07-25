@@ -1,0 +1,54 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Rules for organizing, structuring, and defining the type (Server vs. Client) of React components in the HTTPayer frontend.
+alwaysApply: true
+---
+
+# Component Structure Rules
+
+## 1. File Placement and Organization
+
+-   **Rule:** All reusable UI components (e.g., buttons, cards, headers, demos) that are composed to build pages **must** be created within the `src/components/` directory.
+-   **Rule:** Components should be grouped logically within `src/components/` (e.g., `src/components/ui/`, `src/components/dashboard/`). Create subdirectories when a component has associated helper files, styles (if minimal, via JSDoc or comments), or tests.
+-   **Rule:** The `src/app/` directory is reserved for Next.js routing, layouts (`layout.tsx`), and page components (`page.tsx`).
+-   **Rule:** `src/app/page.tsx` and `src/app/layout.tsx` should primarily compose components from `src/components/` or render static content. Avoid implementing complex business logic directly within these files.
+
+## 2. React Server Components (RSC) vs. Client Components
+
+-   **Rule:** By default, all new components in the Next.js App Router are assumed to be **React Server Components (RSCs)** unless explicitly marked otherwise.
+-   **Rule:** Use **Server Components** for:
+    -   Fetching data directly from backend services *during the initial render* (e.g., `async` components that fetch data before sending HTML to the client).
+    -   Rendering static or largely static UI.
+    -   Reducing client-side JavaScript bundle sizes.
+    -   Accessing server-side resources (e.g., file system, direct database calls, `process.env` for server-only variables).
+-   **Rule:** A component **must** be explicitly marked as a **Client Component** by adding `"use client";` at the very top of the file if it:
+    -   Uses React hooks (e.g., `useState`, `useEffect`, `useContext`, `useRef`, `useQuery`, `useAccount`, etc.).
+    -   Requires browser-specific APIs (e.g., `window`, `document`, local storage).
+    -   Handles user interaction (e.g., `onClick`, `onChange` event listeners).
+    -   Manages client-side lifecycle effects.
+    -   Needs to maintain state that changes frequently based on client-side interactions.
+
+## 3. Server Actions Implementation
+
+-   **Rule:** For handling data mutations (e.g., form submissions, updating data on the server) from both Client and Server Components, **Server Actions** are the preferred method.
+-   **Guideline:** Centralize Server Actions in `src/app/actions.ts` for better organization and reusability, especially if multiple components or pages use the same mutation logic.
+-   **Rule:** Server Actions execute exclusively on the server, allowing them to directly perform backend operations (e.g., call external APIs like your Python Treasury service or Node/Express HTTPayer service).
+-   **Rule:** Server Actions can and should be used to revalidate cached data (`revalidatePath`, `revalidateTag`) to ensure UI consistency after mutations.
+-   **Avoid:** Creating separate `app/api/route.ts` files for simple mutations that can be handled by a Server Action, unless specific HTTP semantics (e.g., non-form-based JSON API for external integrations) are required.
+
+## 4. Component Typing and Props
+
+-   **Rule:** All React components, whether Server or Client, **must** be strongly typed using TypeScript.
+-   **Rule:** Define component props using `type` aliases or `interface` declarations, typically placed at the top of the component file or in a dedicated `types` file if shared.
+    -   *Example:* `type MyComponentProps = { text: string; count: number; };`
+    -   *Example:* `interface AnotherComponentProps { data: MyDataType[]; isLoading: boolean; }`
+-   **Rule:** Ensure props are explicit and self-documenting. Use optional (`?`) for non-required props.
+
+## 5. Performance Considerations (RSC focus)
+
+-   **Guideline:** Pass only necessary props from Server Components to Client Components. Avoid passing large, complex data structures or entire components as children if the Client Component only needs a subset of data, to minimize client bundle size.
+-   **Guideline:** Fetch data as deep as possible in your component tree, preferably in Server Components, to keep loading states granular and prevent waterfalls.

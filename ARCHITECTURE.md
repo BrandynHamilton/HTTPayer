@@ -7,7 +7,9 @@ and manage stablecoin payments (USDC) using the x402 protocol. It enables
 seamless HTTP 402 Payment Required flows for Web2/Web3 applications, supporting
 multi-chain operations and composable integration via SDKs. The project now
 includes a `packages/` directory containing both Python and TypeScript SDKs,
-with the Python SDK published to PyPI.
+with the Python SDK published to PyPI and the TypeScript SDK published to npm. A
+modern frontend is implemented using Next.js and Tailwind CSS, providing a user
+interface for wallet connection, payment demos, and live treasury status.
 
 ---
 
@@ -22,7 +24,8 @@ with the Python SDK published to PyPI.
   - Wallet Providers (e.g., MetaMask)
 - **System Boundary:**
   - HTTPayer mediates between users, providers, and blockchains, automating
-    payment and access.
+    payment and access. The frontend provides a human-in-the-loop interface for
+    interacting with the backend and SDKs.
 
 ### B. Containers
 
@@ -43,11 +46,14 @@ with the Python SDK published to PyPI.
     Base Sepolia).**
 - **Demo Server (Flask):**
   - `x402_servers/x402_server.py`: Example endpoints for x402 payment flows.
+- **Frontend (Next.js/TypeScript/Tailwind):**
+  - Provides a modern UI for wallet connection, payment demos, and live treasury
+    status. Deployed to Vercel.
 - **SDKs (in `packages/`):**
   - **Python SDK:** `packages/python/httpayer/` – Client and decorator classes
     for integrating x402 payment logic into Python apps. Published to PyPI.
   - **TypeScript SDK:** `packages/typescript/httpayer-ts/` – Comprehensive SDK
-    for Node.js/Express and frontend integration.
+    for Node.js/Express and frontend integration. Published to npm.
 - **Tests:**
   - `tests/`, `treasury/tests/`: Usage examples and integration tests.
 
@@ -67,6 +73,10 @@ with the Python SDK published to PyPI.
   - Python: `packages/python/httpayer/` (see also `packages/python/README.md`)
   - TypeScript: `packages/typescript/httpayer-ts/` (see also
     `packages/typescript/httpayer-ts/README.md`)
+- **Frontend:**
+  - `frontend/`: Next.js app, UI components, dashboard, payment demo, Tailwind
+    CSS styling. See also `frontend/ARCHITECTURE.md` for frontend-specific
+    details.
 - **ABI:**
   - `abi/erc20.json`: ERC20 ABI for on-chain contract interaction.
 
@@ -76,10 +86,10 @@ with the Python SDK published to PyPI.
 
 ### A. Payment Flow
 
-1. **User/API Client** requests a resource.
+1. **User/API Client** requests a resource (via SDK or frontend UI).
 2. **Service** responds with HTTP 402 and payment requirements.
-3. **HTTPayer** (TS or Python SDK) presents payment details, connects wallet,
-   and signs transaction (EIP-712/EIP-3009).
+3. **HTTPayer** (TS or Python SDK, or via frontend) presents payment details,
+   connects wallet, and signs transaction (EIP-712/EIP-3009).
 4. **Facilitator** verifies and settles payment on-chain.
 5. **Treasury** tracks balances, burn rates, and liquidity.
 6. **Access** is granted upon payment confirmation.
@@ -100,8 +110,11 @@ with the Python SDK published to PyPI.
   (`packages/typescript/httpayer-ts/`).
 - **Demo/Test:** Example servers and test scripts for integration and
   onboarding.
-- **Chainlink Function:** Ongoing work to enable on-chain invocation of HTTPayer
-  payment flows via Chainlink Functions.
+- **Chainlink Function:** In development — will enable on-chain invocation of
+  HTTPayer payment flows via Chainlink Functions, allowing smart contracts to
+  trigger off-chain paid API calls.
+- **Frontend:** Modern UI for human-in-the-loop payments, wallet connection, and
+  live status.
 
 ---
 
@@ -118,6 +131,8 @@ with the Python SDK published to PyPI.
   - Python: `packages/python/httpayer/`, `packages/python/README.md`
   - TypeScript: `packages/typescript/httpayer-ts/`,
     `packages/typescript/httpayer-ts/README.md`
+- **Frontend:**
+  - `frontend/`, `frontend/ARCHITECTURE.md`
 - **Demo/Test:**
   - `x402_servers/x402_server.py`, `tests/`, `treasury/tests/`
 - **ABI:**
@@ -129,13 +144,15 @@ with the Python SDK published to PyPI.
 
 ## 5. Deployment & Operations
 
-- **Dockerized:** Multi-stage Dockerfile runs all services in one container for
-  demo/testing.
+- **Dockerized:** Multi-stage Dockerfile runs all services (Node, Python, and
+  frontend) in one container for demo/testing.
+- **Frontend:** Deployed to Vercel for production/staging.
 - **Environment:** `.env` for secrets and API keys.
 - **Endpoints:**
   - `/httpayer`, `/treasury/*`, `/facilitator/*`, `/avalanche-weather`,
-    `/base-weather`, etc.
-- **Deployed to:** Akash (see backend/README.md for URLs).
+    `/base-weather`, frontend routes, etc.
+- **Deployed to:** Akash (backend), Vercel (frontend). See backend/README.md for
+  backend URLs.
 
 ---
 
@@ -145,17 +162,20 @@ with the Python SDK published to PyPI.
   this means deploying a new facilitator instance with chain-specific
   configuration (e.g., Avalanche Fuji).**
 - **Integrate SDK:** Use Python SDK (published to PyPI) for 402-gated endpoints
-  or payment automation. Use TypeScript SDK for Node.js/Express or frontend
-  integration.
-- **Frontend:** Planned minimalist UI for human-in-the-loop payments.
-- **Chainlink Function:** Ongoing work to enable smart contracts to trigger
-  HTTPayer payments via Chainlink Functions.
+  or payment automation. Use TypeScript SDK (published to npm) for
+  Node.js/Express or frontend integration.
+- **Frontend:** Use the Next.js app for wallet connection, payment demos, and
+  live dashboard. See `frontend/ARCHITECTURE.md` for details.
+- **Chainlink Function:** In development — will enable smart contracts to
+  trigger HTTPayer payments via Chainlink Functions.
 
 ---
 
 ## 7. References
 
+- See `README.md` for a high-level project overview and value proposition.
 - See `backend/README.md` for setup, usage, and endpoint details.
 - See `PRD.md` for product requirements and roadmap.
+- See `frontend/ARCHITECTURE.md` for frontend architecture and data flow.
 - See `packages/python/README.md` and
   `packages/typescript/httpayer-ts/README.md` for SDK usage.

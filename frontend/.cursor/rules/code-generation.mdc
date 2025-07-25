@@ -1,0 +1,51 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Guidelines for AI code generation tasks within the HTTPayer frontend, ensuring consistency and adherence to project standards.
+agentRequested: true
+---
+
+# Code Generation Rules for AI
+
+## 1. General Principles
+
+-   **Rule:** All generated code must be in **TypeScript**. Strongly type all functions, components, props, and variables.
+-   **Rule:** Generated code should prioritize **readability, clarity, and maintainability**. Avoid overly complex or obscure patterns.
+-   **Rule:** Adhere to all rules outlined in `general.mdc`, `state-management.mdc`, `styling.mdc`, `component-structure.mdc`, `api-interaction.mdc`, `wallet-interaction.mdc`, and `backend-contract.mdc`. Cross-reference these rules explicitly.
+
+## 2. Component Generation
+
+-   **Rule:** When generating a new React component, determine its type (Server Component or Client Component) based on the criteria in `component-structure.mdc`.
+    -   If it's a Client Component, **always** include `"use client";` at the top of the file.
+-   **Rule:** All component props **must** be explicitly typed using `type` or `interface` declarations.
+
+## 3. Data Fetching & Mutations
+
+-   **Rule:** For data fetching (`GET` requests), generate code that utilizes `@tanstack/react-query`'s `useQuery` hook. Include:
+    -   A well-defined, descriptive `queryKey`.
+    -   An `async` `queryFn` that uses the native `fetch` API to interact with the appropriate backend endpoint from `ARCHITECTURE.md`.
+    -   Handling for `isLoading`, `isFetching`, `isError`, and `data` states in the component's JSX.
+-   **Rule:** For data mutations (`POST`, `PUT`, `DELETE` requests), generate code that utilizes `@tanstack/react-query`'s `useMutation` hook.
+    -   Include `isPending`, `isError`, `isSuccess`, and `data` states.
+    -   Consider `onSuccess` callbacks for revalidating relevant `useQuery` data.
+-   **Rule:** Ensure all API calls correctly include necessary headers, especially `x-api-key` for the HTTPayer Orchestration Service, as specified in `ARCHITECTURE.md`.
+
+## 4. Interaction with Backend Services
+
+-   **Rule:** When generating code that interacts with the HTTPayer backend (Orchestration or Treasury services), ensure the exact endpoint paths, request payloads, and expected response types conform to `ARCHITECTURE.md#5-backend-interaction-specifications`.
+-   **Rule:** For `PaymentDemo.tsx`-like components, generate code that calls the `HTTPayer Orchestration Service` via `fetch` as its primary interaction for abstracting blockchain payments.
+
+## 5. Mock Data for Development
+
+-   **Guideline:** During early development or for demonstration purposes where a live backend connection might be unstable, it is acceptable to generate code with **temporary mock data**.
+-   **Rule:** When using mock data, **always** include a clear comment indicating it's a mock and that it needs to be replaced with a real API call.
+-   **Rule:** The structure of mock data should closely resemble the `Expected Success Response` JSON types defined in `ARCHITECTURE.md` to ensure type compatibility.
+
+## 6. Error Handling
+
+-   **Rule:** Generate robust error handling for all API interactions.
+-   **Rule:** Display user-friendly error messages based on the `error` object from `useQuery`/`useMutation` or from direct `fetch` error handling.
+-   **Rule:** Consider UI patterns for displaying error states (e.g., error banners, inline messages).

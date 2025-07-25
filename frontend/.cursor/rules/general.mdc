@@ -1,0 +1,55 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Overarching principles and foundational guidelines for the HTTPayer frontend codebase.
+alwaysApply: true
+---
+
+# General Frontend Principles for HTTPayer
+
+## 1. Core Technology Stack Adherence
+
+-   **Rule:** The project strictly adheres to the specified core technologies:
+    -   **Framework:** Next.js 15 (App Router).
+    -   **Language:** TypeScript for all code.
+    -   **Styling:** Tailwind CSS (utility-first approach).
+    -   **Wallet/Blockchain Interaction:** `wagmi` and `viem` (for wallet connection and signing requests only).
+    -   **Server State & Data Fetching:** TanStack Query (`@tanstack/react-query`).
+    -   **Deployment Target:** Vercel.
+
+## 2. Blockchain Abstraction (HTTPayer's Core Value)
+
+-   **Rule:** The frontend's primary role is to consume high-level HTTPayer backend APIs, **not** to interact directly with blockchain RPCs for payment orchestration or treasury management.
+-   **Rule:** All complex on-chain logic (token transfers, CCIP messages, x402 settlement, treasury balances) is handled by the HTTPayer backend services.
+-   **Rule:** Frontend code should focus on:
+    -   Presenting information from backend APIs.
+    -   Handling user interactions and passing them to backend APIs.
+    -   Facilitating wallet connection and obtaining necessary signatures for backend-driven processes.
+-   **Avoid:** Direct `ethers.js` or `web3.js` RPC calls for transactional logic or general blockchain data retrieval.
+
+## 3. Code Quality & Maintainability
+
+-   **Rule:** All code must be strongly typed with TypeScript. Avoid `any` unless absolutely necessary and with clear justification.
+-   **Rule:** Prioritize readability, simplicity, and reusability in component and function design.
+-   **Rule:** Follow standard React best practices (e.g., proper key usage in lists, avoiding unnecessary re-renders).
+-   **Rule:** Ensure adequate inline comments for complex logic, and clear JSDoc for functions/components where their purpose isn't immediately obvious.
+
+## 4. Performance & User Experience
+
+-   **Rule:** Strive for optimal frontend performance, leveraging Next.js features like RSCs, static rendering, and efficient data fetching with TanStack Query.
+-   **Guideline:** Design for a smooth and responsive user experience, particularly around loading states and interactive elements.
+-   **Consideration:** Minimize client-side JavaScript bundles by offloading logic to Server Components where possible.
+
+## 5. Type Safety and Runtime Validation
+
+-   **Rule:** All code must use TypeScript with the strictest compiler settings (see `ARCHITECTURE.md#X-type-safety-principles`).
+-   **Rule:** All API request and response types must be defined as TypeScript types/interfaces and imported into components and hooks.
+-   **Rule:** All external data (API responses, user input, environment variables) must be validated at runtime using Zod (or a similar library), with types inferred from schemas.
+-   **Rule:** Use branded types for critical domain values (e.g., addresses, message IDs, chain names) to prevent accidental misuse.
+-   **Rule:** All environment variables must be validated at runtime before use.
+-   **Rule:** All error objects and edge cases must be exhaustively typed and handled.
+-   **Rule:** Shared types/interfaces should be placed in `src/types/`, and Zod schemas in `src/schemas/`.
+-   **Reference:** See `ARCHITECTURE.md#X-type-safety-principles` for details and examples.

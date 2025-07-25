@@ -4,7 +4,7 @@ import {
     DEMO_SERVER_URL,
     HTTPAYER_URL,
     TREASURY_URL,
-} from "../../../scripts/vars";
+} from "../../constants/endpoints";
 
 // Read the private API key on the server
 const API_KEY = process.env.HTTPAYER_API_KEY;

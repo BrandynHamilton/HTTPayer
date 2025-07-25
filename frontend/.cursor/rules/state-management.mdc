@@ -1,0 +1,42 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: Defines the strict separation of state management responsibilities across wagmi, TanStack Query, and React's useState for the HTTPayer frontend.
+alwaysApply: true
+---
+
+# State Management Rules
+
+## 1. Core Principle: Clear State Separation
+
+-   **Rule:** All state management within the HTTPayer frontend must adhere to a strict separation of concerns, ensuring each type of data is handled by the appropriate tool. This improves predictability, maintainability, and debugging.
+
+## 2. Wallet & Blockchain Connection State
+
+-   **Tool:** `wagmi` hooks (`useAccount`, `useConnect`, `useDisconnect`, `useChainId`, etc.)
+-   **Purpose:** Manages the user's blockchain wallet connection status, connected account address, network information, and facilitates wallet actions such as signing messages (EIP-712/EIP-3009) to be sent to the backend.
+-   **Rule:** **Always** use `wagmi` hooks for anything related to wallet connectivity or blockchain context.
+-   **Avoid:** Storing wallet address, connection status, or network IDs directly in React's `useState` or managing them via `TanStack Query`. `wagmi` is the single source of truth for this domain.
+
+## 3. Server / API Data State
+
+-   **Tool:** `@tanstack/react-query` (`useQuery` for reads, `useMutation` for writes/updates).
+-   **Purpose:** Manages all data fetched from the HTTPayer backend APIs (e.g., Treasury service, HTTPayer orchestration service). This includes caching, background re-fetching, loading states, and error handling for server-side data.
+-   **Rule:** **Always** use `useQuery` or `useMutation` for fetching and updating data that originates from a backend API.
+-   **Rule:** Define clear and specific `queryKey` arrays for all `useQuery` hooks.
+    -   *Example:* `useQuery({ queryKey: ['treasuryBalances'], queryFn: fetchBalances })`
+    -   *Example:* `useQuery({ queryKey: ['paymentStatus', messageId], queryFn: () => checkPaymentStatus(messageId) })`
+-   **Rule:** Leverage TanStack Query's built-in loading (`isLoading`, `isFetching`), error (`isError`, `error`), and data states.
+-   **Avoid:** Using `useEffect` with `useState` for manual data fetching from backend APIs; this is redundant and less efficient than TanStack Query.
+
+## 4. Local UI State
+
+-   **Tool:** React's `useState` hook.
+-   **Purpose:** Manages temporary, component-specific UI state that is not derived from backend APIs or blockchain interactions.
+    -   *Examples:* Form input values, modal visibility, dropdown open/close status, tab selection, loading indicators for client-only operations not handled by TanStack Query.
+-   **Rule:** Keep `useState` variables as localized as possible, typically within the component where they are directly used.
+-   **Guideline:** If local UI state needs to be shared across a few components, consider React's `useContext` for small, localized contexts, but avoid creating global UI state solutions unless absolutely necessary.
+-   **Avoid:** Storing data fetched from APIs or blockchain connections in `useState`.
