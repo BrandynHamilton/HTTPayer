@@ -201,9 +201,9 @@ backend documentation for live endpoints and setup instructions.
 
 ### Service Endpoints
 
-- **HTTPayer Server:** http://provider.boogle.cloud:31157/httpayer
-- **Treasury Server:** http://provider.boogle.cloud:32279/treasury
-- **Facilitator Server:** http://provider.boogle.cloud:32179
+- **HTTPayer Server:** http://app.httpayer.com/httpayer
+- **Treasury Server:** http://treasury.httpayer.com/treasury
+- **Facilitator Server:** http://facilitator.httpayer.com
 - **Demo Server:** http://provider.akash-palmito.org:30862
 
 ### On-Chain Deployments
