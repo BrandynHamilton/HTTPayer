@@ -3,16 +3,14 @@ from flask import Flask, request, jsonify, make_response
 from httpayer import X402Gate
 import os
 from dotenv import load_dotenv
-from python_viem import get_network_by_chain_id, get_chain_id_by_network
-from web3 import Web3
 
+from ccip_terminal.metadata import USDC_MAP
+from ccip_terminal.network import network_func
 load_dotenv()
 
-current_dir = os.getcwd()
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-print(f'Current directory: {current_dir}')
-
-ERC20_ABI_PATH = os.path.join(current_dir, "tests", "abi", "erc20.json")
+ERC20_ABI_PATH = os.path.join(current_dir, "../abi/erc20.json")
 print(f'ERC20_ABI_PATH: {ERC20_ABI_PATH}')
 
 with open(ERC20_ABI_PATH, 'r') as f:
@@ -21,37 +19,18 @@ with open(ERC20_ABI_PATH, 'r') as f:
 load_dotenv()
 
 FACILITATOR_URL = os.getenv("FACILITATOR_URL", "https://x402.org")
-PAY_TO_ADDRESS = os.getenv("PAY_TO_ADDRESS", None)
-RPC_GATEWAY = os.getenv("RPC_GATEWAY", None)
+PAY_TO_ADDRESS = os.getenv("PAY_TO_ADDRESS", "0x58a4Cae5e8dDA3a5614972F34951e482a29ef0f0")
 
-if not PAY_TO_ADDRESS:
-    raise ValueError("PAY_TO_ADDRESS must be set in the environment variables.")
-
-if not RPC_GATEWAY:
-    raise ValueError("RPC_GATEWAY must be set in the environment variables.")
-
-chain_id = int(os.getenv("CHAIN_ID", "84532")) 
-network = get_network_by_chain_id(chain_id)
-
-print(f'Network: {network}')
 print(f'FACILITATOR_URL: {FACILITATOR_URL}')
-print(f'PAY_TO_ADDRESS: {PAY_TO_ADDRESS}')
-print(f'RPC_GATEWAY: {RPC_GATEWAY}')
 
-if network == 'avalanche-fuji':
+network = 'avalanche'
+
+if network == 'avalanche':
+    network_id = 'avalanche-fuji'
     if FACILITATOR_URL == "https://x402.org":
         raise ValueError("FACILITATOR_URL must be set to a valid URL for Avalanche Fuji testnet.")
-elif network == 'base-sepolia':
-    if FACILITATOR_URL != "https://x402.org":
-        FACILITATOR_URL = "https://x402.org"
 
-w3 = Web3(Web3.HTTPProvider(RPC_GATEWAY))
-
-USDC_MAP = {
-    "avalanche-fuji": "0x5425890298aed601595a70ab815c96711a31bc65",
-    "base-sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
-    # Add more networks as desired
-}
+w3 = network_func(network)
 
 token_address = USDC_MAP.get(network)
 
@@ -62,11 +41,11 @@ version_onchain = token.functions.version().call()
 
 extra = {"name": name_onchain, "version": version_onchain}
 
-print(f'Network: {network}, extra: {extra}')
+print(f'Network: {network}, Network ID: {network_id}, extra: {extra}')
 
 gate = X402Gate(
     pay_to=PAY_TO_ADDRESS,
-    network=network,
+    network=network_id,
     asset_address=token_address,
     max_amount=1000,
     asset_name=extra["name"],
@@ -83,17 +62,11 @@ def create_app():
     
     @app.route('/')
     def index():
-        return "<h1>Weather Server</h1><p>Welcome to the Weather Server!</p>"
+        return "<h1>Avalanche Weather Server</h1><p>Welcome to the Avalanche Weather Server!</p>"
 
-    @app.route("/weather")
+    @app.route("/weather", methods=["POST"])
     @gate.gate
     def weather():
-        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
-        return response
-    
-    @app.route("/post-weather", methods=["POST"])
-    @gate.gate
-    def post_weather():
         data = request.json
         location = data.get("location", "default_location")
         print(f"Received weather request for location: {location}")
@@ -106,7 +79,7 @@ def create_app():
     return app
 
 if __name__ == "__main__":
-    port = int(os.getenv("TEST_SERVER_PORT", 5035))
+    port = int(50351)
     print(f'Starting test4 on {port}...')
     app = create_app()
     app.run(host="0.0.0.0",port=port)

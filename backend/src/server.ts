@@ -57,8 +57,10 @@ function buildInit(
   payload: unknown,
 ): UndiciRequestInit {
   if (method.toUpperCase() === "GET") {
-    // **NO body / NO content-type** → undici won’t set content-length
-    return { method };
+    return {
+      method,
+      headers: {}  // add this
+    };
   }
 
   const body = JSON.stringify(payload ?? {});
@@ -128,17 +130,30 @@ app.post("/httpayer", async (req, res) => {
       ...baseInit,
       paymentRequirements: [exact],
       headers: {
-        ...baseInit.headers,
+        ...(baseInit.headers ?? {}),
         connection: "close",
       },
     };
+
+    console.log("[httpayer] fetch init", JSON.stringify(baseInit));
 
     console.log(
       "[httpayer] paying…",
       `{chain:${chain.name}  to:${exact.payTo}  amount:${exact.maxAmountRequired}}`,
     );
 
-    const paidResp = await fetchWithPay(api_url, paidInit as any);
+    const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    let paidResp = await fetchWithPay(api_url, paidInit as any);
+    console.log("[httpayer] paid status", paidResp.status);
+
+    // Retry once if payment hasn't been picked up yet
+    if (paidResp.status === 402) {
+      console.warn("[httpayer] got 402 after payment, retrying after delay…");
+      await delay(2500); // wait 2.5 seconds
+      paidResp = await fetchWithPay(api_url, paidInit as any);
+      console.log("[httpayer] retry status", paidResp.status);
+    }
     const text = await paidResp.text();
 
     console.log("[httpayer] paid status", paidResp.status);

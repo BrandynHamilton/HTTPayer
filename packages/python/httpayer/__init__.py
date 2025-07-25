@@ -1,2 +1,2 @@
-from .client import (HttPayerClient)
+from .client import (HTTPayerClient)
 from .gate import (X402Gate)

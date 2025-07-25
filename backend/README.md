@@ -199,7 +199,7 @@ x-api-key: YOUR_HTTPAYER_API_KEY
 
 | Method | Endpoint             | Description            |
 | ------ | -------------------- | ---------------------- |
-| GET    | `health`             | API health endpoint    |
+| GET    | `/health`            | API health endpoint    |
 | GET    | `/avalanche-weather` | Avalanche 402 endpoint |
 | GET    | `/base-weather`      | Base 402 endpoint      |
 
@@ -222,9 +222,9 @@ The `tests` directory provides examples of how to use the HTTPayer API.
 
 ## Deployments
 
-- HTTPayer Server: http://provider.boogle.cloud:31157/httpayer
-- Treasury Server: http://provider.boogle.cloud:32279/treasury
-- Facilitator Server: http://provider.boogle.cloud:32179
+- HTTPayer Server: http://app.httpayer.com/httpayer
+- Treasury Server: http://treasury.httpayer.com/treasury
+- Facilitator Server: http://facilitator.httpayer.com
 - Demo Server: http://provider.akash-palmito.org:30862
 
 ## Notes

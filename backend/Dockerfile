@@ -10,11 +10,12 @@ RUN npm install && npm run build
 # ──────────────────────────────────────────────
 # Stage 2 – Python + Node runtime
 # ──────────────────────────────────────────────
-FROM python:3.11-slim AS runtime
+FROM python:3.13-slim AS runtime
 
-# 1 – base OS tools
-RUN apt-get update && apt-get install -y \
-    curl build-essential nodejs \
+# 1 – base OS tools + Node 20.x + NGINX from NodeSource
+RUN apt-get update && apt-get install -y curl gnupg build-essential nginx \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get clean
 
 # 2 – Python tooling
@@ -37,11 +38,15 @@ RUN pip install --no-cache-dir -e .
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
-# 8 – ports
-EXPOSE 5089 3000 4021 5074 5036
+# 8 Nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# 9 – start everything
+# 9 Expose only nginx
+EXPOSE 80
+
+# 10 – start everything
 CMD ["sh", "-c", "\
+    nginx && \
     node dist/server.js & \
     node dist/demoServer.js & \
     python -u facilitator/facilitator.py & \

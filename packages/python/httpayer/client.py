@@ -4,16 +4,16 @@ import os
 
 load_dotenv()
 
-class HttPayerClient:
+class HTTPayerClient:
     """
-    Unified HttPayer client for managing 402 payments.
+    Unified HTTPayer client for managing 402 payments.
     """
 
     def __init__(self,router_url=None,api_key=None):
         """
-        :param router_url: URL of the hosted /HttPayer endpoint.
+        :param router_url: URL of the hosted /HTTPayer endpoint.
         """
-        self.router_url = router_url or os.getenv("X402_ROUTER_URL", "http://provider.boogle.cloud:31157/httpayer")
+        self.router_url = router_url or os.getenv("X402_ROUTER_URL", "http://app.httpayer.com/httpayer")
         self.api_key = api_key or os.getenv('HTTPAYER_API_KEY')
 
         if not self.router_url or not self.api_key:

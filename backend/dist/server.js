@@ -95,13 +95,16 @@ app.post("/httpayer", async (req, res) => {
             chain,
         });
         const fetchWithPay = wrapFetchWithPayment(undiciFetch, walletClient);
-        const paidResp = await fetchWithPay(api_url, {
-            method,
-            body: method.toUpperCase() === "GET" ? undefined : JSON.stringify(payload ?? {}),
-            // @ts-expect-error: custom field not in RequestInit
+        const paidInit = {
+            ...baseInit,
             paymentRequirements: [exact],
-        });
+            headers: {
+                ...baseInit.headers,
+                connection: "close",
+            },
+        };
         console.log("[httpayer] paying…", `{chain:${chain.name}  to:${exact.payTo}  amount:${exact.maxAmountRequired}}`);
+        const paidResp = await fetchWithPay(api_url, paidInit);
         const text = await paidResp.text();
         console.log("[httpayer] paid status", paidResp.status);
         // optional callback

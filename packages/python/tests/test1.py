@@ -1,4 +1,4 @@
-from httpayer import HttPayerClient
+from httpayer import HTTPayerClient
 import json
 
 def main(urls):
@@ -18,7 +18,7 @@ def main(urls):
     for url in urls:
         print(f'processing {url}...')
 
-        client = HttPayerClient()
+        client = HTTPayerClient()
         response = client.request("GET", url)
 
         print(f'response headers: {response.headers}')  # contains the x-payment-response header

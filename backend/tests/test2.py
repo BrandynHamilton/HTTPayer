@@ -9,7 +9,7 @@ HTTPAYER_API_KEY = os.getenv('HTTPAYER_API_KEY')
 if not HTTPAYER_API_KEY:
     raise ValueError("HTTPAYER_API_KEY must be set in the environment variables.")\
     
-url = f"http://provider.boogle.cloud:31157/httpayer"
+url = f"http://app.httpayer.com/httpayer"
 
 header = {'x-api-key':HTTPAYER_API_KEY}
 

@@ -14,7 +14,7 @@ This package provides:
 
 - Unified HTTPayer router integration
 - Automatic retry on `402` with `X-PAYMENT` headers
-- Framework-agnostic endpoint protection with `X402Gate`
+- Flask endpoint protection with `X402Gate`
 - EVM token metadata verification (name/version via `web3`)
 - Compatible with Base Sepolia, Avalanche Fuji, and other testnets
 
@@ -38,13 +38,17 @@ pip install httpayer[demo]
 
 ## Environment Setup
 
-Create a `.env` file or set environment variables directly:
+For use of the HTTPayerClient class, you copy the `.env.sample` file into a `.env` file and fill the HTTPAYER_API_KEY variable with your API key.
 
 ```env
-NETWORK_TYPE=testnet
+HTTPAYER_API_KEY=your-api-key
+```
+
+While the X402Gate class itself doesn't read environment variables, the test script included here does require several variables. To run that script it is reccomended you copy the `.env.sample` file into a `.env` file and fill in for the following:
+
+```env
 NETWORK=base
 FACILITATOR_URL=https://x402.org
-HTTPAYER_API_KEY=your-api-key
 RPC_GATEWAY=https://your-gateway.example
 PAY_TO_ADDRESS=0xYourReceivingAddress
 ```
@@ -53,14 +57,14 @@ PAY_TO_ADDRESS=0xYourReceivingAddress
 
 ## Usage
 
-### HttPayerClient
+### HTTPayerClient
 
 A client for paying 402-gated endpoints using a hosted HTTPayer router.
 
 ```python
-from httpayer import HttPayerClient
+from httpayer import HTTPayerClient
 
-client = HttPayerClient()
+client = HTTPayerClient()
 
 response = client.request("GET", "http://provider.akash-palmito.org:30862/base-weather")
 
@@ -75,7 +79,7 @@ You can also manually call `pay_invoice(...)` if you already received a 402 resp
 
 ### X402Gate Decorator
 
-A gate/decorator for protecting Web2 API routes using x402 payment authorization headers.
+A gate/decorator for protecting Flask API routes using x402 payment authorization headers.
 
 ```python
 from httpayer import X402Gate
@@ -95,37 +99,49 @@ gate = X402Gate(
 def create_app():
     app = Flask(__name__)
 
-    @app.route("/health")
-    def health():
-        return "OK", 200
-
     @app.route('/')
     def index():
-        return "<h1>Demo Weather Server</h1><p>Welcome to the Demo Weather Server!</p>"
+        return "<h1>Weather Server</h1><p>Welcome to the Weather Server!</p>"
 
     @app.route("/weather")
+    @gate.gate
     def weather():
-        request_data = {
-            "headers": dict(request.headers),
-            "url": request.base_url
-        }
-
-        @gate.gate
-        def protected(_request_data):
-            return {
-                "status": 200,
-                "headers": {},
-                "body": {
-                    "weather": "sunny",
-                    "temp": 75
-                }
-            }
-
-        result = protected(request_data)
-
-        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
+        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
+        return response
 
     return app
+```
+
+We can dynamically generate the payment requirements in our Flask app and add it to specific endpoints in our app. Each endpoint can have its own specialized payment instructions.
+
+```python
+
+gate_usdc = X402Gate(
+    pay_to=...,
+    network="base-sepolia",
+    asset_address=USDC_ADDRESS,
+    max_amount=1000000,
+    ...
+)
+
+gate_dai = X402Gate(
+    pay_to=...,
+    network="avalanche-fuji",
+    asset_address=DAI_ADDRESS,
+    max_amount=2000000,
+    ...
+)
+
+@app.route("/api/usdc-data")
+@gate_usdc.gate
+def usdc_endpoint():
+    ...
+
+@app.route("/api/dai-data")
+@gate_dai.gate
+def dai_endpoint():
+    ...
+
 ```
 
 ---
@@ -142,18 +158,30 @@ python tests/test1.py
 
 ### test2.py – Flask Weather Server Demo
 
-Starts a local API server (`/weather`) that requires a valid `X-PAYMENT` header:
+Starts a local API server with `/weather` and `/post-weather` endpoints that require a valid `X-PAYMENT` header:
 
 ```bash
 python tests/test2.py
 ```
 
-Send payment using HTTPayer:
+***Note*** The HTTPayer server cannot pay a locally-hosted endpoint. You will need to use the x402 [Javascript](https://github.com/coinbase/x402/tree/main) or [Python](https://github.com/coinbase/x402/tree/main/python/x402) SDK to pay and test these endpoints if only deployed locally.
+
+Send payment using HTTPayer to the GET method endpoint:
 
 ```bash
-http POST http://localhost:31157/httpayer \
-  api_url=http://localhost:50358/weather \
+http POST http://app.httpayer.com/httpayer \
+  api_url=http://demo-server:5035/weather \
   method=GET \
+  x-api-key:your-api-key
+```
+
+Send payment using HTTPayer to the POST method endpoint
+
+```bash
+http POST http://app.httpayer.com//httpayer \
+  api_url=http://demo-server:5035/post-weather \
+  method=POST \
+  payload=YourCity \
   x-api-key:your-api-key
 ```
 
@@ -164,7 +192,7 @@ http POST http://localhost:31157/httpayer \
 ```
 httpayer/                 # Main package
 ├── __init__.py
-├── client.py            # HttPayerClient class
+├── client.py            # HTTPayerClient class
 ├── gate.py              # X402Gate and helpers
 tests/
 ├── test1.py             # Client-based demo

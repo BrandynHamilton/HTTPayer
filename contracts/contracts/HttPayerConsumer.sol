@@ -13,6 +13,7 @@ contract HttPayerChainlinkConsumer is FunctionsClient, ConfirmedOwner {
     bytes public s_lastError;
 
     event Response(bytes32 indexed requestId, string response, bytes error);
+    event RawResponse(bytes32 requestId, bytes rawResponse);
 
     constructor(
         address router
@@ -50,5 +51,6 @@ contract HttPayerChainlinkConsumer is FunctionsClient, ConfirmedOwner {
         s_lastResponse = string(response);
         s_lastError = err;
         emit Response(requestId, s_lastResponse, err);
+        emit RawResponse(requestId, response);
     }
 }

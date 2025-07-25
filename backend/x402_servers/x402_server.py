@@ -4,10 +4,15 @@ from flask_cors import CORS
 from httpayer import X402Gate
 import os
 from dotenv import load_dotenv
+from web3 import Web3
 
-from ccip_terminal.metadata import USDC_MAP
-from ccip_terminal.network import network_func
 load_dotenv()
+
+USDC_MAP = {
+    "avalanche-fuji": "0x5425890298aed601595a70ab815c96711a31bc65",
+    "base-sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e"
+    # Add more networks as desired
+}
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,21 +24,22 @@ with open(ERC20_ABI_PATH, 'r') as f:
 
 load_dotenv()
 
+BASE_SEPOLIA_GATEWAY = os.getenv("BASE_SEPOLIA_GATEWAY")
+AVALANCHE_FUJI_GATEWAY = os.getenv("AVALANCHE_FUJI_GATEWAY")
+
 FACILITATOR_URL = os.getenv("FACILITATOR_URL", "https://x402.org")
 PAY_TO_ADDRESS = os.getenv("PAY_TO_ADDRESS", "0x58a4Cae5e8dDA3a5614972F34951e482a29ef0f0")
 
 print(f'FACILITATOR_URL: {FACILITATOR_URL}')
 
-network = 'avalanche'
-
-# if network == 'avalanche':
-#     network_id = 'avalanche-fuji'
-#     if FACILITATOR_URL == "https://x402.org":
-#         raise ValueError("FACILITATOR_URL must be set to a valid URL for Avalanche Fuji testnet.")
-
 def get_network_details(network):
 
-    w3 = network_func(network)
+    if network == 'avalanche-fuji':
+        RPC_GATEWAY = AVALANCHE_FUJI_GATEWAY
+    elif network == 'base-sepolia':
+        RPC_GATEWAY = BASE_SEPOLIA_GATEWAY
+
+    w3 = Web3(Web3.HTTPProvider(RPC_GATEWAY))
 
     token_address = USDC_MAP.get(network)
     if not token_address:
@@ -49,13 +55,13 @@ def get_network_details(network):
 
     return extra
 
-avalanche_details = get_network_details('avalanche')
-base_details = get_network_details('base')
+avalanche_details = get_network_details('avalanche-fuji')
+base_details = get_network_details('base-sepolia')
 
 avalanche_gate = X402Gate(
     pay_to=PAY_TO_ADDRESS,
     network='avalanche-fuji',
-    asset_address=USDC_MAP.get('avalanche'),
+    asset_address=USDC_MAP.get('avalanche-fuji'),
     max_amount=1000,
     asset_name=avalanche_details["name"],
     asset_version=avalanche_details["version"],
@@ -65,7 +71,7 @@ avalanche_gate = X402Gate(
 base_gate = X402Gate(
     pay_to=PAY_TO_ADDRESS,
     network='base-sepolia',
-    asset_address=USDC_MAP.get('base'),
+    asset_address=USDC_MAP.get('base-sepolia'),
     max_amount=1000,
     asset_name=base_details["name"],
     asset_version=base_details["version"],
@@ -85,53 +91,17 @@ def create_app():
     def index():
         return "<h1>x402 Demo Server</h1><p>Welcome to the x402 Demo Server!</p>"
 
-    @app.route("/avalanche-weather")
-    def avalanche_weather():
-        request_data = {
-            "headers": dict(request.headers),
-            "url": request.base_url
-        }
-
-        def handler(_request_data):
-            return {
-                "status": 200,
-                "headers": {},
-                "body": {
-                    "data": {
-                        "body": {
-                            "weather": "sunny",
-                            "temp": 75
-                        }
-                    },
-                    "error": False
-                }
-            }
-
-        result = avalanche_gate.gate(handler)(request_data)
-        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
-
-    @app.route("/base-weather")
+    @app.route("/base-weather", methods=['GET'])
+    @base_gate.gate
     def base_weather():
-        request_data = {
-            "headers": dict(request.headers),
-            "url": request.base_url
-        }
+        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
+        return response
 
-        def handler(_request_data):
-            return {
-                "status": 200,
-                "headers": {},
-                "body": {
-                    "body": {
-                        "weather": "sunny",
-                        "temp": 75
-                    },
-                    "error": False
-                }
-            }
-
-        result = base_gate.gate(handler)(request_data)
-        return make_response(jsonify(result["body"]), result["status"], result.get("headers", {}))
+    @app.route("/avalanche-weather", methods=['GET'])
+    @avalanche_gate.gate
+    def avalanche_weather():
+        response = make_response(jsonify({"weather": "sunny", "temp": 75}))
+        return response
 
     return app
 

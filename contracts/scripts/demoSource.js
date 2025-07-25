@@ -1,11 +1,11 @@
 (async () => {
-    const apiUrl = "http://localhost:5036/base-weather";
+    const apiUrl = "http://provider.akash-palmito.org:30862/base-weather";
     const methodUrl = "GET";
 
     let payload = null;
 
     const apiKey = "chainlinkhack2025";
-    const httpayerUrl = "http://localhost:30001/httpayer";
+    const httpayerUrl = "http://app.httpayer.com/httpayer";
 
     const response = await fetch(httpayerUrl, {
         method: "POST",
@@ -25,13 +25,10 @@
 
     let resultString;
     try {
-        const body = data?.data?.body;
-        if (typeof body === "string") {
-            resultString = body;
-        } else if (body && typeof body === "object") {
-            resultString = JSON.stringify(body);
-        } else if (typeof data === "string") {
+        if (typeof data === "string") {
             resultString = data;
+        } else if (data && typeof data === "object") {
+            resultString = JSON.stringify(data);
         } else {
             resultString = "Missing or invalid body";
         }
@@ -39,5 +36,5 @@
         resultString = "Failed to parse body: " + e.message;
     }
 
-    console.log("Result:", resultString.slice(0, 200));
+    console.log("Result:", JSON.stringify(data).slice(0, 200));
 })();
