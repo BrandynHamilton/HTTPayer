@@ -11,7 +11,7 @@ class HttpayerClient {
 		this.routerUrl =
 			routerUrl ||
 			process.env.NEXT_PUBLIC_HTTPAYER_API_URL ||
-			"http://provider.boogle.cloud:31157/httpayer";
+			"https://app.httpayer.com/httpayer";
 		this.apiKey =
 			apiKey || process.env.NEXT_PUBLIC_HTTPAYER_API_KEY || "chainlinkhack2025";
 		if (!this.routerUrl || !this.apiKey) {

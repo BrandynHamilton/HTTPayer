@@ -7,6 +7,7 @@ globalThis.require = require;
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { decodeXPaymentResponse, wrapFetchWithPayment } from "x402-fetch";
@@ -19,6 +20,11 @@ dotenv.config();
 const PORT = Number(process.env.MAIN_PORT ?? 3000);
 const app = express();
 app.use(bodyParser.json());
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "x-api-key"],
+}));
 app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok", message: "server running" });
 });
@@ -45,8 +51,10 @@ const CHAIN_MAP = {
 // ---------------------------------------------------------------------------
 function buildInit(method, payload) {
     if (method.toUpperCase() === "GET") {
-        // **NO body / NO content-type** → undici won’t set content-length
-        return { method };
+        return {
+            method,
+            headers: {} // add this
+        };
     }
     const body = JSON.stringify(payload ?? {});
     return {
@@ -99,12 +107,22 @@ app.post("/httpayer", async (req, res) => {
             ...baseInit,
             paymentRequirements: [exact],
             headers: {
-                ...baseInit.headers,
+                ...(baseInit.headers ?? {}),
                 connection: "close",
             },
         };
+        console.log("[httpayer] fetch init", JSON.stringify(baseInit));
         console.log("[httpayer] paying…", `{chain:${chain.name}  to:${exact.payTo}  amount:${exact.maxAmountRequired}}`);
-        const paidResp = await fetchWithPay(api_url, paidInit);
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        let paidResp = await fetchWithPay(api_url, paidInit);
+        console.log("[httpayer] paid status", paidResp.status);
+        // Retry once if payment hasn't been picked up yet
+        if (paidResp.status === 402) {
+            console.warn("[httpayer] got 402 after payment, retrying after delay…");
+            await delay(2500); // wait 2.5 seconds
+            paidResp = await fetchWithPay(api_url, paidInit);
+            console.log("[httpayer] retry status", paidResp.status);
+        }
         const text = await paidResp.text();
         console.log("[httpayer] paid status", paidResp.status);
         // optional callback

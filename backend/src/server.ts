@@ -9,6 +9,7 @@ const require = createRequire(import.meta.url);
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
+import cors from "cors";
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { decodeXPaymentResponse, wrapFetchWithPayment } from "x402-fetch";
@@ -24,6 +25,11 @@ const PORT = Number(process.env.MAIN_PORT ?? 3000);
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors({
+  origin: "*", 
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "x-api-key"],
+}));
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok", message: "server running" });
