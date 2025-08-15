@@ -3,6 +3,8 @@
 **Automated, cross-chain stablecoin payments for APIs, agents, and smart
 contracts — powered by x402, Chainlink CCIP, and EIP-3009.**
 
+**Winner of the Cross-Chain Soltuions track for the [2025 Chainlink Chromium hackathon](https://blog.chain.link/announcing-the-chainlink-chromion-hackathon-winners/).**
+
 ## What is HTTPayer?
 
 HTTPayer is the missing link for monetizing APIs and digital services with
