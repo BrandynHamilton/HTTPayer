@@ -115,7 +115,7 @@ app.get(
   "/premium",
   x402Gate.gate((req, res) => {
     res.json({ data: "premium content" });
-  }),
+  })
 );
 ```
 
@@ -203,10 +203,11 @@ backend documentation for live endpoints and setup instructions.
 
 ### Service Endpoints
 
-- **HTTPayer Server:** http://app.httpayer.com/httpayer
-- **Treasury Server:** http://treasury.httpayer.com/treasury
-- **Facilitator Server:** http://facilitator.httpayer.com
-- **Demo Server:** http://provider.akash-palmito.org:30862
+- **HTTPayer Server:** https://app.httpayer.com/httpayer
+- **Treasury Server:** https://treasury.httpayer.com/treasury
+- **Facilitator Server:** https://facilitator.httpayer.com
+- **Demo Server (base-sepolia):** https://demo.httpayer.com/base-weather
+- **Demo Server (avalanche-fuji):** https://demo.httpayer.com/avalanche-weather
 
 ### On-Chain Deployments
 
