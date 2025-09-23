@@ -24,6 +24,8 @@ from pathlib import Path
 from diskcache import Cache
 from typing import Dict, Tuple
 from threading import Thread
+import sqlite3
+from flask_cors import CORS
 
 from httpayer_core.treasury.burn_rate import (
     fetch_authorized_burns,
@@ -50,9 +52,50 @@ def load_abi():
 scheduler = BackgroundScheduler()
 job_lock = Lock()
 
+base_w3 = network_func("base")
+avalanche_w3 = network_func("avalanche")
+ethereum_w3 = network_func("ethereum")
+
 global ccip_messages
 
 ccip_messages = []
+
+def init_messages_table():
+    print('initializing messages table')
+    conn = sqlite3.connect('ccip_messages.db')
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message TEXT NOT NULL
+        )
+        """)
+    conn.commit()
+    conn.close()
+
+def save_messages(message):
+    conn = sqlite3.connect('ccip_messages.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO messages (message) VALUES (?)", (message))
+    conn.commit()
+    conn.close()
+
+    c.execute('''CREATE TABLE IF NOT EXISTS messages
+                 (id INTEGER PRIMARY KEY AUTOINCREMENT, message TEXT)''')
+    c.execute(
+            "INSERT INTO messages (message) VALUES (?)",
+            (message)
+        )
+    conn.commit()
+    conn.close()
+
+def get_messages():
+    conn = sqlite3.connect('ccip_messages.db')
+    c = conn.cursor()
+    c.execute("SELECT message FROM messages")
+    rows = c.fetchall()
+    conn.close()
+    return [row[0] for row in rows]
 
 def run_in_thread(fn, *args, **kw):
     """Fire-and-forget helper (daemon=True)."""
@@ -108,7 +151,7 @@ def compute_burn_rate_for_chains(chains: list[str], window_days=7) -> dict:
             cache.set(f"transactions_{chain}_{account_address}", df_tx)
             avg_7d, daily = rolling_burn(df_tx, window_days=window_days)
 
-            w3 = network_func(chain)
+            w3 = base_w3 if chain == "base" else avalanche_w3
             bal = current_usdc_balance(w3, USDC_MAP[chain], account_address)
             run = safe_runway(runway_metrics(bal, avg_7d))
 
@@ -147,6 +190,8 @@ def compute_burn_rate_for_chains(chains: list[str], window_days=7) -> dict:
 def create_app():
     app = Flask(__name__)
 
+    CORS(app)
+
     def run_manage_liquidity():
         with app.app_context():
             if job_lock.locked():
@@ -181,15 +226,15 @@ def create_app():
         replace_existing=True
     )
 
-    @app.route('/treasury')
+    @app.route('/', methods=['GET'])
     def index():
         return render_template('index.html')
     
-    @app.route('/treasury/health', methods=['GET'])
+    @app.route('/health', methods=['GET'])
     def health_check():
         return jsonify({"status": "healthy"}), 200
     
-    @app.route('/treasury/cached-data', methods=['GET'])
+    @app.route('/cached-data', methods=['GET'])
     def get_cached_data():
         data = cache.get('data')
         ccip_messages = cache.get('ccip_messages', [])
@@ -197,52 +242,51 @@ def create_app():
         # print(f"CCIP messages: {ccip_messages}")
         return jsonify({'data':data,'messages':ccip_messages}), 200
     
-    @app.route('/treasury/charts', methods=['GET'])
+    @app.route('/charts', methods=['GET'])
     def visualizations():
 
-        data = cache.get('data', None)
-        balances  = data.get('balances', None)
-        # print(f"Balances: {balances}")
+        graph_json_1 = cache.get('graph_json_1', None)
+        if graph_json_1 is None:
 
-        balances_df = pd.DataFrame(balances)
-        # print(f"Balances DataFrame:\n{balances_df}")
+            data = cache.get('data', None)
+            balances  = data.get('balances', None)
+            # print(f"Balances: {balances}")
 
-        cm1 = ChartMaker()
-        cm1.build(
-            df=balances_df,
-            groupby_col='chain',
-            num_col='balance',
-            title='Chain Balances',
-            chart_type='pie',
-            options = {
-                'margin':dict(t=100),'annotations':True,
-                'tickprefix':{'y1':'$'},'hole_size':0.5,
-                'line_width':0,
-                'texttemplate':'%{label}<br>%{percent}',
-                'show_legend':False,'legend_placement':{'x':1.1,'y':1},
-                'textinfo':'percent+label'
-            }
-        )
-        cm1.add_title()
-        
-        graph_json_1 = json.dumps(cm1.return_fig(), cls=PlotlyJSONEncoder)
+            balances_df = pd.DataFrame(balances)
+            # print(f"Balances DataFrame:\n{balances_df}")
+
+            cm1 = ChartMaker()
+            cm1.build(
+                df=balances_df,
+                groupby_col='chain',
+                num_col='balance',
+                title='Chain Balances',
+                chart_type='pie',
+                options = {
+                    'margin':dict(t=100),'annotations':True,
+                    'tickprefix':{'y1':'$'},'hole_size':0.5,
+                    'line_width':0,
+                    'texttemplate':'%{label}<br>%{percent}',
+                    'show_legend':False,'legend_placement':{'x':1.1,'y':1},
+                    'textinfo':'percent+label'
+                }
+            )
+            # cm1.add_title()
+            
+            graph_json_1 = json.dumps(cm1.return_fig(), cls=PlotlyJSONEncoder)
+            cache.set('graph_json_1', graph_json_1, expire=300)  # Cache for 5 minutes
 
         return jsonify({
             'graph_1': graph_json_1
         }), 200
 
-    @app.route('/treasury/balances', methods=['GET'])
+    @app.route('/balances', methods=['GET'])
     def get_balances():
-        w3 = network_func("ethereum")
-        fees = get_dynamic_gas_fees(w3) 
-        max_fee_per_gas = fees["max_fee_per_gas"]
-        gas_limit_est = estimate_dynamic_gas("ethereum")
-        estimate = ((gas_limit_est * max_fee_per_gas) / 1e18) * 1.25
-        print(f"Gas limit estimate: {gas_limit_est}, Max fee per gas: {max_fee_per_gas}, Estimate: {estimate}")
-        account_info = get_account_info(min_gas_threshold=estimate)
-        return jsonify(account_info)
+        data = cache.get('data', None)
+        balances  = data.get('balances', None)
+        return jsonify(balances)
     
-    @app.route('/treasury/gas_estimate', methods=['POST'])
+    @app.route('/gas_estimate', methods=['POST'])
     def gas_estimate():
         data = request.get_json()
         dest_chain = data.get('dest_chain')
@@ -265,7 +309,7 @@ def create_app():
             print(f"Error during gas estimate: {e}")
             return jsonify({"error": str(e)}), 500
         
-    @app.route("/treasury/burn_rate", methods=["POST"])
+    @app.route("/burn_rate", methods=["POST"])
     def burn_rate():
         req = request.get_json() or {}
         chains = req.get("chains") or [req.get("chain", "base")]
@@ -279,7 +323,7 @@ def create_app():
         except Exception as exc:
             return jsonify({"error": str(exc)}), 500
 
-    @app.route('/treasury/manage_liquidity', methods=['POST'])
+    @app.route('/manage_liquidity', methods=['POST'])
     def manage_liquidity():
 
         try:
@@ -369,44 +413,44 @@ def create_app():
 
         return jsonify({"ok": True, "note": run_note}), 200
     
-    @app.route('/treasury/transfer', methods=['POST'])
-    def transfer():
-        data = request.get_json()
-        to = data.get('to', ACCOUNT_ADDRESS)
-        dest = data.get('dest')
-        amount = data.get('amount')
+    # @app.route('/transfer', methods=['POST'])
+    # def transfer():
+    #     data = request.get_json()
+    #     to = data.get('to', ACCOUNT_ADDRESS)
+    #     dest = data.get('dest')
+    #     amount = data.get('amount')
 
-        if not any([to, dest, amount]):
-            return jsonify({"error": "Missing required fields"}), 400
+    #     if not any([to, dest, amount]):
+    #         return jsonify({"error": "Missing required fields"}), 400
         
-        if not isinstance(amount, (int, float)):
-            return jsonify({"error": "Amount must be a number"}), 400
+    #     if not isinstance(amount, (int, float)):
+    #         return jsonify({"error": "Amount must be a number"}), 400
         
-        if not to.startswith("0x"):
-            return jsonify({"error": "Invalid 'to' address format"}), 400
+    #     if not to.startswith("0x"):
+    #         return jsonify({"error": "Invalid 'to' address format"}), 400
         
-        if dest not in GAS_LIMITS_BY_CHAIN.keys():
-            return jsonify({"error": "Invalid destination chain"}), 400
+    #     if dest not in GAS_LIMITS_BY_CHAIN.keys():
+    #         return jsonify({"error": "Invalid destination chain"}), 400
         
-        try:
+    #     try:
         
-            receipt, links, success, message_id = send_ccip_transfer(
-                to_address=to,
-                dest_chain=dest,
-                amount=amount,
-            )
+    #         receipt, links, success, message_id = send_ccip_transfer(
+    #             to_address=to,
+    #             dest_chain=dest,
+    #             amount=amount,
+    #         )
 
-            return jsonify({
-                "receipt": receipt,
-                "links": links,
-                "success": success,
-                "message_id": message_id
-            }), 200
-        except Exception as e:
-            print(f"Error during transfer: {e}")
-            return jsonify({"error": str(e)}), 500
+    #         return jsonify({
+    #             "receipt": receipt,
+    #             "links": links,
+    #             "success": success,
+    #             "message_id": message_id
+    #         }), 200
+    #     except Exception as e:
+    #         print(f"Error during transfer: {e}")
+    #         return jsonify({"error": str(e)}), 500
     
-    @app.route('/treasury/check_status', methods=['POST'])
+    @app.route('/check_status', methods=['POST'])
     def check_status():
         data = request.get_json()
         message_id = data.get('message_id')

@@ -39,14 +39,14 @@ Node script that:
 
 - Loads environment variables (`.env`)
 - Connects to your deployed contract
-- Sends a Chainlink request using the `sendHttpayerRequest(...)` function
+- Sends a Chainlink request using the `sendHTTPayerRequest(...)` function
 - Prints the resulting transaction and response
 
 ### Example Args
 
 ```
 const args = [
-  "http://localhost:5036/base-weather",  // target URL
+  "https://demo.httpayer.com/base-weather",  // target URL
   "GET",                                  // method
   "null"                                  // payload as JSON string
 ];
@@ -85,4 +85,4 @@ node scripts/request.js
 ## Deployed Addresses
 
 - HTTPayer Account Address: [0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab](https://sepolia.basescan.org/address/0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab)
-- HTTPayer Consumer Smart Contract: [0xa7ee479017AEcA4fa8844cAe216678F6989FF002](https://sepolia.basescan.org/address/0x338937Ab9453eA2381c49C8b64E2dD2830915793)
+- HTTPayer Consumer Smart Contract: [0x0dfeACf815c2b8C1D4b49beaEc3D6aC011c6Da09](https://sepolia.basescan.org/address/0x0dfeACf815c2b8C1D4b49beaEc3D6aC011c6Da09)

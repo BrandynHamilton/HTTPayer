@@ -13,7 +13,7 @@ const ChainlinkFunctionsStatus: FC = () => {
 			<h2 className="text-2xl font-bold mb-2">
 				Chainlink Functions Integration
 			</h2>
-			<p className="text-base text-gray-300 mb-4">
+			<p className="text-base text-black-300 mb-4">
 				HTTPayer integrates with Chainlink Functions to enable smart contracts
 				to programmatically trigger x402 payments and access valuable gated APIs
 				(credit scores, financial attestations, weather data, and more) via

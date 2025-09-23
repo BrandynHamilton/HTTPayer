@@ -13,7 +13,7 @@ class HTTPayerClient:
         """
         :param router_url: URL of the hosted /HTTPayer endpoint.
         """
-        self.router_url = router_url or os.getenv("X402_ROUTER_URL", "http://app.httpayer.com/httpayer")
+        self.router_url = router_url or os.getenv("X402_ROUTER_URL", "http://app.httpayer.com/pay")
         self.api_key = api_key or os.getenv('HTTPAYER_API_KEY')
 
         if not self.router_url or not self.api_key:

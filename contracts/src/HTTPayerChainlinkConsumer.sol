@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.19;
+pragma solidity 0.8.30;
 
-import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/v1_0_0/FunctionsClient.sol";
+import {FunctionsClient} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol";
 import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
-import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/v1_0_0/libraries/FunctionsRequest.sol";
+import {FunctionsRequest} from "@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol";
 
-contract HttPayerChainlinkConsumer is FunctionsClient, ConfirmedOwner {
+contract HTTPayerChainlinkConsumer is FunctionsClient, ConfirmedOwner {
     using FunctionsRequest for FunctionsRequest.Request;
 
     bytes32 public s_lastRequestId;
@@ -19,7 +19,7 @@ contract HttPayerChainlinkConsumer is FunctionsClient, ConfirmedOwner {
         address router
     ) FunctionsClient(router) ConfirmedOwner(msg.sender) {}
 
-    function sendHttpayerRequest(
+    function sendHTTPayerRequest(
         uint64 subscriptionId,
         string[] calldata args, // [api_url, method, payload]
         uint32 gasLimit,

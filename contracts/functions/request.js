@@ -5,21 +5,27 @@ require("dotenv").config();
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const contractAddress = process.env.CONSUMER_ADDRESS;
-const abi = require("../abi/HttPayerChainlinkConsumer.json");
+
+// This prints: E:\Projects\httpayer\contracts\functions
+console.log("__dirname:", __dirname);
+
+const contractDeployment = require(path.resolve(__dirname, "..", "deployments", "HTTPayerConsumer.json"));
+const contractAddress = contractDeployment.deployedTo;
+
+const artifact = require(path.resolve(__dirname, "..", "out", "HTTPayerChainlinkConsumer.sol", "HTTPayerChainlinkConsumer.json"));
+const abi = artifact.abi;
 
 const contract = new ethers.Contract(contractAddress, abi, wallet);
 
 const args = [
-    "http://provider.akash-palmito.org:30862/base-weather",
-    "GET",
-    "null"
+    "https://demo.httpayer.com/base-weather",
+    "GET"
 ];
 
 const sourceJs = fs.readFileSync(path.join(__dirname, "source.js")).toString();
 
 async function main() {
-    const tx = await contract.sendHttpayerRequest(
+    const tx = await contract.sendHTTPayerRequest(
         parseInt(process.env.SUBSCRIPTION_ID),
         args,
         300000,

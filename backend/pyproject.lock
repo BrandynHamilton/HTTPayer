@@ -2,13 +2,13 @@
 #    uv pip compile --output-file pyproject.lock pyproject.toml
 aiohappyeyeballs==2.6.1
     # via aiohttp
-aiohttp==3.12.14
+aiohttp==3.12.15
     # via web3
 aiosignal==1.4.0
     # via aiohttp
 annotated-types==0.7.0
     # via pydantic
-anyio==4.9.0
+anyio==4.10.0
     # via
     #   httpx
     #   starlette
@@ -22,27 +22,27 @@ attrs==25.3.0
     #   aiohttp
     #   jsonschema
     #   referencing
-bitarray==3.5.2
+bitarray==3.7.1
     # via eth-account
 blinker==1.9.0
     # via flask
-cachetools==6.1.0
+cachetools==6.2.0
     # via httpayer-core (pyproject.toml)
 ccip-terminal==0.1.3
     # via httpayer-core (pyproject.toml)
-certifi==2025.7.14
+certifi==2025.8.3
     # via
     #   httpcore
     #   httpx
     #   requests
     #   sentry-sdk
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 chartengineer==0.1.3
     # via httpayer-core (pyproject.toml)
-choreographer==1.0.9
+choreographer==1.0.10
     # via kaleido
-ckzg==2.1.1
+ckzg==2.1.2
     # via eth-account
 click==8.2.1
     # via
@@ -54,10 +54,11 @@ click==8.2.1
 colorama==0.4.6
     # via
     #   click
+    #   pytest
     #   uvicorn
 colorcet==3.1.0
     # via chartengineer
-contourpy==1.3.2
+contourpy==1.3.3
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
@@ -65,11 +66,11 @@ cytoolz==1.0.1
     # via eth-utils
 diskcache==5.6.3
     # via httpayer-core (pyproject.toml)
-dnspython==2.7.0
+dnspython==2.8.0
     # via email-validator
 dotenv==0.9.9
     # via chartengineer
-email-validator==2.2.0
+email-validator==2.3.0
     # via
     #   fastapi
     #   pydantic
@@ -100,7 +101,7 @@ eth-typing==5.2.1
     #   eth-utils
     #   web3
     #   x402
-eth-utils==5.3.0
+eth-utils==5.3.1
     # via
     #   eth-abi
     #   eth-account
@@ -112,20 +113,20 @@ eth-utils==5.3.0
     #   x402
 fastapi==0.116.1
     # via x402
-fastapi-cli==0.0.8
+fastapi-cli==0.0.11
     # via fastapi
-fastapi-cloud-cli==0.1.4
+fastapi-cloud-cli==0.1.5
     # via fastapi-cli
-fastjsonschema==2.21.1
+fastjsonschema==2.21.2
     # via nbformat
-flask==3.1.1
+flask==3.1.2
     # via
     #   httpayer-core (pyproject.toml)
     #   flask-cors
     #   x402
 flask-cors==6.0.1
     # via httpayer-core (pyproject.toml)
-fonttools==4.59.0
+fonttools==4.59.2
     # via matplotlib
 frozenlist==1.7.0
     # via
@@ -157,60 +158,63 @@ idna==3.10
     #   httpx
     #   requests
     #   yarl
+iniconfig==2.1.0
+    # via pytest
 itsdangerous==2.2.0
     # via flask
 jinja2==3.1.6
     # via
     #   fastapi
     #   flask
-jsonschema==4.25.0
+jsonschema==4.25.1
     # via nbformat
-jsonschema-specifications==2025.4.1
+jsonschema-specifications==2025.9.1
     # via jsonschema
 jupyter-core==5.8.1
     # via nbformat
-kaleido==1.0.0
+kaleido==1.1.0
     # via chartengineer
-kiwisolver==1.4.8
+kiwisolver==1.4.9
     # via matplotlib
 logistro==1.1.0
     # via
     #   choreographer
     #   kaleido
-markdown-it-py==3.0.0
+markdown-it-py==4.0.0
     # via rich
 markupsafe==3.0.2
     # via
     #   flask
     #   jinja2
     #   werkzeug
-matplotlib==3.10.3
+matplotlib==3.10.6
     # via chartengineer
 mdurl==0.1.2
     # via markdown-it-py
-multidict==6.6.3
+multidict==6.6.4
     # via
     #   aiohttp
     #   yarl
-narwhals==1.48.0
+narwhals==2.5.0
     # via plotly
 nbformat==5.10.4
     # via chartengineer
-numpy==2.3.1
+numpy==2.3.3
     # via
     #   httpayer-core (pyproject.toml)
     #   chartengineer
     #   contourpy
     #   matplotlib
     #   pandas
-orjson==3.11.0
+orjson==3.11.3
     # via kaleido
 packaging==25.0
     # via
     #   kaleido
     #   matplotlib
     #   plotly
-pandas==2.3.1
+    #   pytest
+pandas==2.3.2
     # via
     #   httpayer-core (pyproject.toml)
     #   chartengineer
@@ -218,10 +222,12 @@ parsimonious==0.10.0
     # via eth-abi
 pillow==11.3.0
     # via matplotlib
-platformdirs==4.3.8
+platformdirs==4.4.0
     # via jupyter-core
-plotly==6.2.0
+plotly==6.3.0
     # via chartengineer
+pluggy==1.6.0
+    # via pytest
 propcache==0.3.2
     # via
     #   aiohttp
@@ -230,7 +236,7 @@ pycryptodome==3.23.0
     # via
     #   eth-hash
     #   eth-keyfile
-pydantic==2.11.7
+pydantic==2.11.8
     # via
     #   eth-account
     #   eth-utils
@@ -244,11 +250,17 @@ pydantic-core==2.33.2
 pydantic-settings==2.10.1
     # via x402
 pygments==2.19.2
-    # via rich
-pyngrok==7.2.12
+    # via
+    #   pytest
+    #   rich
+pyngrok==7.3.0
     # via httpayer-core (pyproject.toml)
 pyparsing==3.2.3
     # via matplotlib
+pytest==8.4.2
+    # via pytest-timeout
+pytest-timeout==2.4.0
+    # via kaleido
 python-dateutil==2.9.0.post0
     # via
     #   matplotlib
@@ -279,17 +291,17 @@ referencing==0.36.2
     # via
     #   jsonschema
     #   jsonschema-specifications
-regex==2024.11.6
+regex==2025.9.1
     # via parsimonious
-requests==2.32.4
+requests==2.32.5
     # via
     #   python-viem
     #   web3
-rich==14.0.0
+rich==14.1.0
     # via
     #   rich-toolkit
     #   typer
-rich-toolkit==0.14.8
+rich-toolkit==0.15.1
     # via
     #   fastapi-cli
     #   fastapi-cloud-cli
@@ -299,11 +311,11 @@ rlp==4.1.0
     # via
     #   eth-account
     #   eth-rlp
-rpds-py==0.26.0
+rpds-py==0.27.1
     # via
     #   jsonschema
     #   referencing
-sentry-sdk==2.33.2
+sentry-sdk==2.37.1
     # via fastapi-cloud-cli
 shellingham==1.5.4
     # via typer
@@ -313,7 +325,7 @@ six==1.17.0
     # via python-dateutil
 sniffio==1.3.1
     # via anyio
-starlette==0.47.2
+starlette==0.47.3
     # via fastapi
 toolz==1.0.0
     # via cytoolz
@@ -321,13 +333,13 @@ traitlets==5.14.3
     # via
     #   jupyter-core
     #   nbformat
-typer==0.16.0
+typer==0.17.4
     # via
     #   fastapi-cli
     #   fastapi-cloud-cli
-types-requests==2.32.4.20250611
+types-requests==2.32.4.20250913
     # via web3
-typing-extensions==4.14.1
+typing-extensions==4.15.0
     # via
     #   eth-typing
     #   fastapi
@@ -359,7 +371,7 @@ uvicorn==0.35.0
     #   fastapi-cloud-cli
 watchfiles==1.1.0
     # via uvicorn
-web3==7.12.1
+web3==7.13.0
     # via
     #   httpayer-core (pyproject.toml)
     #   httpayer
@@ -372,7 +384,7 @@ werkzeug==3.1.3
     # via
     #   flask
     #   flask-cors
-x402==0.1.4
+x402==0.2.1
     # via httpayer-core (pyproject.toml)
 yarl==1.20.1
     # via aiohttp

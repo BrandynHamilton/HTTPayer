@@ -153,13 +153,13 @@ ETHERSCAN_API_KEY= xyz789...
 | Method | Endpoint    | Description                       |
 | ------ | ----------- | --------------------------------- |
 | GET    | `/health`   | API health endpoint               |
-| POST   | `/httpayer` | Automatically pays `402` endpoint |
+| POST   | `/pay` | Automatically pays `402` endpoint |
 
 Request JSON:
 
 ```json
 {
-  "api_url": "http://provider.akash-palmito.org:30862/avalanche-weather",
+  "api_url": "https://demo.httpayer.com/base-weather",
   "method": "GET",
   "payload": {}
 }
@@ -179,12 +179,11 @@ x-api-key: YOUR_HTTPAYER_API_KEY
 
 | Method | Endpoint                     | Description                  |
 | ------ | ---------------------------- | ---------------------------- |
-| GET    | `/treasury/health`           | API health endpoint          |
-| GET    | `/treasury/balances`         | Fetch gas-aware balance info |
-| POST   | `/treasury/burn_rate`        | Burn rate stats by chain     |
-| POST   | `/treasury/transfer`         | Trigger USDC CCIP transfer   |
-| POST   | `/treasury/check_status`     | Check CCIP transfer status   |
-| POST   | `/treasury/manage_liquidity` | Manages liquidity via CCIP   |
+| GET    | `/health`           | API health endpoint          |
+| GET    | `/balances`         | Fetch gas-aware balance info |
+| POST   | `/burn_rate`        | Burn rate stats by chain     |
+| POST   | `/check_status`     | Check CCIP transfer status   |
+| POST   | `/manage_liquidity` | Manages liquidity via CCIP   |
 
 ### Facilitator Server
 
@@ -222,10 +221,10 @@ The `tests` directory provides examples of how to use the HTTPayer API.
 
 ## Deployments
 
-- HTTPayer Server: http://app.httpayer.com/httpayer
-- Treasury Server: http://treasury.httpayer.com/treasury
-- Facilitator Server: http://facilitator.httpayer.com
-- Demo Server: http://provider.akash-palmito.org:30862
+- HTTPayer Server: https://app.httpayer.com/pay
+- Treasury Server: https://treasury.httpayer.com/treasury
+- Facilitator Server: https://facilitator.httpayer.com
+- Demo Server: https://demo.httpayer.com/base-weather
 
 ## Notes
 

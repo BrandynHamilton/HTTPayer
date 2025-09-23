@@ -24,14 +24,17 @@ def main(urls):
         print(f'response headers: {response.headers}')  # contains the x-payment-response header
         print(f'response status code: {response.status_code}')  # should be 200 OK
         print(f'response text: {response.text}')  # contains the actual resource
-        print(f'response json: {response.json()}')
+        try:
+            print(f'response json: {response.json()}')  # if the response is JSON, print it
+        except ValueError:
+            print("Response content is not valid JSON")
 
         responses.append(response)
 
     return responses
 
 if __name__ == "__main__":
-    print(f'starting test3...')
-    urls = ["http://provider.akash-palmito.org:30862/base-weather",
-            "http://provider.akash-palmito.org:30862/avalanche-weather"]
+    print(f'starting test1...')
+    urls = ["https://www.x402.org/protected",
+            "https://demo.httpayer.com/base-weather",]
     main(urls)

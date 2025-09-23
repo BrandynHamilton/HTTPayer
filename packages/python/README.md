@@ -4,7 +4,7 @@
 
 This package provides:
 
-- `HttPayerClient`: a programmatic client for automatically paying 402 responses using a hosted HTTPayer server
+- `HTTPayerClient`: a programmatic client for automatically paying 402 responses using a hosted HTTPayer server
 - `X402Gate`: a decorator for protecting Web2 API endpoints using 402-compliant authorization and on-chain token metadata
 - Environment-variable support for network/facilitator configuration
 
@@ -66,7 +66,7 @@ from httpayer import HTTPayerClient
 
 client = HTTPayerClient()
 
-response = client.request("GET", "http://provider.akash-palmito.org:30862/base-weather")
+response = client.request("GET", "https://demo.httpayer.com/base-weather")
 
 print(response.status_code)      # 200
 print(response.headers)          # Includes X-PAYMENT-RESPONSE
@@ -164,12 +164,12 @@ Starts a local API server with `/weather` and `/post-weather` endpoints that req
 python tests/test2.py
 ```
 
-***Note*** The HTTPayer server cannot pay a locally-hosted endpoint. You will need to use the x402 [Javascript](https://github.com/coinbase/x402/tree/main) or [Python](https://github.com/coinbase/x402/tree/main/python/x402) SDK to pay and test these endpoints if only deployed locally.
+**_Note_** The HTTPayer server cannot pay a locally-hosted endpoint. You will need to use the x402 [Javascript](https://github.com/coinbase/x402/tree/main) or [Python](https://github.com/coinbase/x402/tree/main/python/x402) SDK to pay and test these endpoints if deployed locally.
 
 Send payment using HTTPayer to the GET method endpoint:
 
 ```bash
-http POST http://app.httpayer.com/httpayer \
+http POST http://app.httpayer.com/pay \
   api_url=http://demo-server:5035/weather \
   method=GET \
   x-api-key:your-api-key

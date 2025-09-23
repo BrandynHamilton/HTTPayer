@@ -1,0 +1,33 @@
+services:
+  httpayer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: httpayer
+    container_name: httpayer
+    env_file:
+      - .env
+    ports:
+      - "30001:4284"
+  treasury:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: treasury
+    container_name: treasury
+    env_file:
+      - .env
+    ports:
+      - "50741:50741"
+  facilitator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: facilitator
+    container_name: facilitator
+    env_file:
+      - .env
+    ports:
+      - "50742:50742"
+
+    

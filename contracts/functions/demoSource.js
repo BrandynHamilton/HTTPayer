@@ -1,11 +1,11 @@
 (async () => {
-    const apiUrl = "http://provider.akash-palmito.org:30862/base-weather";
+    const apiUrl = "https://demo.httpayer.com/base-weather";
     const methodUrl = "GET";
 
     let payload = null;
 
     const apiKey = "chainlinkhack2025";
-    const httpayerUrl = "http://app.httpayer.com/httpayer";
+    const httpayerUrl = "http://app.httpayer.com/pay";
 
     const response = await fetch(httpayerUrl, {
         method: "POST",

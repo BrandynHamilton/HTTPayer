@@ -8,3 +8,6 @@ backend/treasury/__pycache__/
 backend/docker.yml
 backend/docker2.yml
 contracts/node_modules/
+*.txt
+contracts/lib
+contracts/node_modules

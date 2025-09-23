@@ -80,7 +80,7 @@ pip install httpayer
 ```python
 from httpayer import HttPayerClient
 client = HttPayerClient()
-response = client.request("GET", "http://provider.akash-palmito.org:30862/base-weather")
+response = client.request("GET", "https://demo.httpayer.com/base-weather")
 print(response.json())  # Automatic payment + data access
 ```
 
@@ -93,7 +93,7 @@ npm install httpayer-ts
 ```typescript
 import { HttpayerClient } from "httpayer-ts";
 const client = new HttpayerClient();
-const response = await client.get("http://provider.akash-palmito.org:30862/base-weather");
+const response = await client.get("https://demo.httpayer.com/base-weather");
 console.log(response.data);  # Seamless 402 handling
 ```
 
@@ -213,7 +213,7 @@ backend documentation for live endpoints and setup instructions.
 - **HTTPayer Account Address:**
   [0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab](https://sepolia.basescan.org/address/0x6f8550D4B3Af628d5eDe06131FE60A1d2A5DE2Ab)
 - **HTTPayer Consumer Smart Contract:**
-  [0x338937Ab9453eA2381c49C8b64E2dD2830915793](https://sepolia.basescan.org/address/0x338937Ab9453eA2381c49C8b64E2dD2830915793)
+  [0x0dfeACf815c2b8C1D4b49beaEc3D6aC011c6Da09](https://sepolia.basescan.org/address/0x0dfeACf815c2b8C1D4b49beaEc3D6aC011c6Da09)
 
 ## Learn More
 

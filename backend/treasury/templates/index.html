@@ -3,37 +3,125 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💵 HTTPayer Treasury Server</title>
+  <title>HTTPayer Treasury Dashboard</title>
   <script src="https://cdn.plot.ly/plotly-3.0.1.min.js"></script>
   <style>
-    body            { font-family: system-ui, sans-serif; margin: 1.5rem; }
-    h1, h2, h3, h4  { margin:.25em 0; }
-    .loading        { font-style: italic; }
-    ul              { list-style:none; padding-left:0; }
-    li              { line-height:1.4em; }
-    .graph-container {
-      background:#fff; border:2px solid #000; border-radius:10px;
-      margin:2rem 0; padding:20px;
-      min-height:400px; display:flex; justify-content:center; align-items:center;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 1.5rem;
+      background-color: #f4f6f8;
+      color: #333;
     }
-    footer a        { color:#fff; text-decoration:underline; }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      min-height: 400px;
+    }
+
+    .graph-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .loading {
+      font-style: italic;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    table th, table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #f7f7f7;
+      text-align: left;
+    }
+
+    table tbody tr:hover {
+      background-color: #f0f8ff;
+    }
+
+    a {
+      color: #1e88e5;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 10px;
+      background: #333;
+      color: #fff;
+      border-radius: 8px;
+    }
+
+    /* Responsive burn-rate layout */
+    .burn-chains {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .burn-chain {
+      flex: 1 1 300px; /* grow, shrink, min width */
+      background: #fdfdfd;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .burn-chain h3 {
+      margin-top: 0;
+    }
   </style>
 
   <script>
-    const VALID_CHAIN_NAMES = ["ethereum", "avalanche", "base", "arbitrum", "optimism", "polygon", "bnb", "solana", "gnosis", "fantom"];
+    const VALID_CHAIN_NAMES = ["ethereum","avalanche","base","arbitrum","optimism","polygon","bnb","solana","gnosis","fantom"];
 
-    function safeFmt(n, d = 2) {
+    function safeFmt(n, d=2){
       const x = Number(n);
       return Number.isFinite(x) ? x.toFixed(d) : "∞";
     }
 
-    function plotBalances() {
+    function plotBalances(){
       const container = document.getElementById("graph_1");
       const chartArea = document.getElementById("chart-area");
 
-      // chartArea.textContent = "Loading chart…";
-
-      fetch("/treasury/charts")
+      fetch("/charts")
         .then(r => r.json())
         .then(payload => {
           const fig = JSON.parse(payload.graph_1);
@@ -47,17 +135,17 @@
         });
     }
 
-    function loadDashboard() {
+    function loadDashboard(){
       const burnBox = document.getElementById("burn-rate-box");
       const ccipBox = document.getElementById("ccip-list");
 
       burnBox.textContent = "Loading burn-rate data…";
       ccipBox.textContent = "Loading CCIP transfers…";
 
-      fetch("/treasury/cached-data")
+      fetch("/cached-data")
         .then(r => r.json())
         .then(payload => {
-          const data     = payload.data     || {};
+          const data = payload.data || {};
           const messages = payload.messages || [];
 
           burnBox.innerHTML = "";
@@ -67,37 +155,52 @@
             VALID_CHAIN_NAMES.includes(chain.toLowerCase())
           );
 
-          if (validChains.length === 0) {
+          if(validChains.length === 0){
             burnBox.textContent = "No cached burn-rate yet.";
           } else {
+            const container = document.createElement("div");
+            container.className = "burn-chains";
+
             validChains.forEach(chain => {
               const accounts = data[chain];
               const chainDiv = document.createElement("div");
-              chainDiv.style.marginBottom = "2rem";
-              chainDiv.innerHTML = `<h2>${chain.toUpperCase()}</h2>`;
+              chainDiv.className = "burn-chain";
+              chainDiv.innerHTML = `<h3>${chain.toUpperCase()}</h3>`;
+              
+              const table = document.createElement("table");
+              const header = document.createElement("thead");
+              header.innerHTML = `<tr>
+                <th>Account</th>
+                <th>Avg Burn Rate</th>
+                <th>Balance</th>
+                <th>Runway</th>
+                <th>Last Updated</th>
+              </tr>`;
+              table.appendChild(header);
 
+              const body = document.createElement("tbody");
               Object.entries(accounts).forEach(([addr, info]) => {
-                const accDiv = document.createElement("div");
-                accDiv.style.margin = "0 0 1.5rem 1rem";
-                accDiv.innerHTML = `
-                  <h4 style="margin:.25em 0;">Acct: ${addr}</h4>
-                  <ul>
-                    <li><strong>Avg Burn Rate:</strong> ${safeFmt(info.average_burn_rate)} USDC/day</li>
-                    <li><strong>Balance:</strong> ${safeFmt(info.balance)} USDC</li>
-                    <li><strong>Runway:</strong> ${safeFmt(info.runway.days,1)} d (${safeFmt(info.runway.months)} mo, ${safeFmt(info.runway.years)} yr)</li>
-                    <li><strong>Last Updated:</strong> ${new Date(info.timestamp).toLocaleString()}</li>
-                  </ul>`;
-                chainDiv.appendChild(accDiv);
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${addr}</td>
+                  <td>${safeFmt(info.average_burn_rate)}</td>
+                  <td>${safeFmt(info.balance)}</td>
+                  <td>${safeFmt(info.runway.days,1)} d (${safeFmt(info.runway.months)} mo, ${safeFmt(info.runway.years)} yr)</td>
+                  <td>${new Date(info.timestamp).toLocaleString()}</td>`;
+                body.appendChild(tr);
               });
 
-              burnBox.appendChild(chainDiv);
+              table.appendChild(body);
+              chainDiv.appendChild(table);
+              container.appendChild(chainDiv);
             });
+
+            burnBox.appendChild(container);
           }
 
           ccipBox.innerHTML = "";
           ccipBox.classList.remove("loading");
 
-          if (messages.length === 0) {
+          if(messages.length === 0){
             ccipBox.textContent = "No transfers recorded yet.";
           } else {
             const list = document.createElement("ul");
@@ -121,23 +224,29 @@
     window.onload = loadDashboard;
   </script>
 </head>
-
 <body>
-  <h1>💵 HTTPayer Treasury Server</h1>
+  <h1>HTTPayer Treasury Dashboard</h1>
 
-  <h2>Chain Balances</h2>
-  <div id="graph_1" class="graph-container loading">
-    <div id="chart-area"></div>
+  <div class="dashboard-grid">
+    <div class="card">
+      <h2>Chain Balances</h2>
+      <div id="graph_1" class="graph-container loading">
+        <div id="chart-area"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Burn-Rate</h2>
+      <div id="burn-rate-box" class="loading">Loading…</div>
+    </div>
   </div>
 
+  <div class="card" style="margin-top:2rem;">
+    <h2>Latest CCIP Transfers</h2>
+    <div id="ccip-list" class="loading">Loading…</div>
+  </div>
 
-  <h2>Burn-Rate (cached)</h2>
-  <div id="burn-rate-box" class="loading">Loading…</div>
-
-  <h2 style="margin-top:2.5rem;">Latest CCIP transfers</h2>
-  <div id="ccip-list" class="loading">Loading…</div>
-
-  <footer style="text-align:center;margin-top:2rem;padding:10px;background:#333;color:#fff">
+  <footer>
     <p>GitHub · <a href="https://github.com/BrandynHamilton/HttPayer">HTTPayer</a></p>
   </footer>
 </body>

@@ -66,7 +66,7 @@ function buildInit(method, payload) {
 // ---------------------------------------------------------------------------
 // main proxy
 // ---------------------------------------------------------------------------
-app.post("/httpayer", async (req, res) => {
+app.post("/pay", async (req, res) => {
     //-------------------------------- auth
     if (req.headers["x-api-key"] !== apiKey) {
         res.status(401).json({ error: "Unauthorized: invalid API key" });
