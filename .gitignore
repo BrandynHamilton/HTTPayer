@@ -9,5 +9,5 @@ backend/docker.yml
 backend/docker2.yml
 contracts/node_modules/
 *.txt
-contracts/lib
+contracts/lib/
 contracts/node_modules
