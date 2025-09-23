@@ -1,16 +1,16 @@
-# HttPayer Contracts
+# HTTPayer Contracts
 
 This folder contains the Chainlink Functions smart contract and related scripts for integrating x402-style payments into decentralized workflows via Chainlink DONs.
 
 ## Contract Overview
 
-### `HttPayerChainlinkConsumer.sol`
+### `HTTPayerChainlinkConsumer.sol`
 
 This contract allows you to trigger off-chain HTTP requests (via Chainlink Functions) that go through an x402-enabled proxy (`httpayer`).
 
 #### Key Methods
 
-- `sendHttpayerRequest(...)` – Initiates a Chainlink Functions request with a JS source script and parameters.
+- `sendHTTPayerRequest(...)` – Initiates a Chainlink Functions request with a JS source script and parameters.
 - `fulfillRequest(...)` – Internal function called by Chainlink upon response.
 
 #### Events
