@@ -153,10 +153,17 @@ app.post("/pay", async (req, res) => {
     let paidResp = await fetchWithPay(api_url, paidInit as any);
     console.log("[httpayer] paid status", paidResp.status);
 
+    if (paidResp.status === 200) {
+      console.log("[httpayer] success!");
+      res.status(200).send(await paidResp.text());
+      return;
+
+    }
+
     // Retry once if payment hasn't been picked up yet
     if (paidResp.status === 402) {
-      console.warn("[httpayer] got 402 after payment, retrying after delay…");
-      await delay(2500); // wait 2.5 seconds
+      console.warn("[httpayer] got 402 after payment, retrying after delay, waiting 0.1 seconds…");
+      await delay(250); // wait 0.25 seconds
       paidResp = await fetchWithPay(api_url, paidInit as any);
       console.log("[httpayer] retry status", paidResp.status);
     }

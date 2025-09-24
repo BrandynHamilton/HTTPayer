@@ -17,14 +17,22 @@ const response = await Functions.makeHttpRequest({
   },
 });
 
-// Prefer raw .text, else fallback to stringified .data
-let resultString = response.text;
+// 🔹 Try to capture body
+let resultString = response.text || "";
 if (!resultString && response.data) {
-  resultString = JSON.stringify(response.data);
+  try {
+    resultString = JSON.stringify(response.data);
+  } catch (err) {
+    resultString = "[Could not stringify response.data]";
+  }
 }
 
+// 🔹 If still empty, include status + headers for debugging
 if (!resultString) {
-  resultString = "Missing response body";
+  resultString = `Empty body (status ${response.status || "unknown"})`;
+  if (response.headers) {
+    resultString += ` headers=${JSON.stringify(response.headers)}`;
+  }
 }
 
 return Functions.encodeString(resultString);

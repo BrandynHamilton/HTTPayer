@@ -30,12 +30,15 @@ async function main() {
         args,
         300000,
         process.env.DON_ID,
-        sourceJs
+        sourceJs,
     );
 
     console.log("Tx sent. Waiting for confirmation...");
     await tx.wait();
     console.log("Tx confirmed:", tx.hash);
+
+    // wait a bit before checking s_lastResponse
+    await new Promise((resolve) => setTimeout(resolve, 2_000)); // 2s
 
     const response = await contract.s_lastResponse();
     console.log("Chainlink result:", response);

@@ -178,7 +178,7 @@ http POST http://app.httpayer.com/pay \
 Send payment using HTTPayer to the POST method endpoint
 
 ```bash
-http POST http://app.httpayer.com//httpayer \
+http POST http://app.httpayer.com/pay \
   api_url=http://demo-server:5035/post-weather \
   method=POST \
   payload=YourCity \

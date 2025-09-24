@@ -203,11 +203,11 @@ backend documentation for live endpoints and setup instructions.
 
 ### Service Endpoints
 
-- **HTTPayer Server:** https://app.httpayer.com/httpayer
-- **Treasury Server:** https://treasury.httpayer.com/treasury
+- **HTTPayer Server:** https://app.httpayer.com
+- **Treasury Server:** https://treasury.httpayer.com
 - **Facilitator Server:** https://facilitator.httpayer.com
-- **Demo Server (base-sepolia):** https://demo.httpayer.com/base-weather
-- **Demo Server (avalanche-fuji):** https://demo.httpayer.com/avalanche-weather
+- **Demo Server (base-sepolia endpoint):** https://demo.httpayer.com/base-weather
+- **Demo Server (avalanche-fuji endpoint):** https://demo.httpayer.com/avalanche-weather
 
 ### On-Chain Deployments
 

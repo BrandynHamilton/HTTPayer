@@ -150,10 +150,10 @@ ETHERSCAN_API_KEY= xyz789...
 
 ### HTTPayer Server
 
-| Method | Endpoint    | Description                       |
-| ------ | ----------- | --------------------------------- |
-| GET    | `/health`   | API health endpoint               |
-| POST   | `/pay` | Automatically pays `402` endpoint |
+| Method | Endpoint  | Description                       |
+| ------ | --------- | --------------------------------- |
+| GET    | `/health` | API health endpoint               |
+| POST   | `/pay`    | Automatically pays `402` endpoint |
 
 Request JSON:
 
@@ -177,8 +177,8 @@ x-api-key: YOUR_HTTPAYER_API_KEY
 
 ### Treasury Server
 
-| Method | Endpoint                     | Description                  |
-| ------ | ---------------------------- | ---------------------------- |
+| Method | Endpoint            | Description                  |
+| ------ | ------------------- | ---------------------------- |
 | GET    | `/health`           | API health endpoint          |
 | GET    | `/balances`         | Fetch gas-aware balance info |
 | POST   | `/burn_rate`        | Burn rate stats by chain     |
@@ -221,10 +221,10 @@ The `tests` directory provides examples of how to use the HTTPayer API.
 
 ## Deployments
 
-- HTTPayer Server: https://app.httpayer.com/pay
-- Treasury Server: https://treasury.httpayer.com/treasury
+- HTTPayer Server: https://app.httpayer.com
+- Treasury Server: https://treasury.httpayer.com
 - Facilitator Server: https://facilitator.httpayer.com
-- Demo Server: https://demo.httpayer.com/base-weather
+- Demo Server: https://demo.httpayer.com
 
 ## Notes
 
