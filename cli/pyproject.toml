@@ -7,10 +7,21 @@ name = "httpayer-cli"
 version = "0.1.0"
 description = "CLI for HTTPayer Usage"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
     "click>=8.1.8",
     "httpayer>=0.1.4",
+    "pandas>=2.3.2",
     "pydantic>=2.11.9",
+    "sqlalchemy>=2.0.43",
 ]
+
+[tool.setuptools.packages.find]
+include = ["httpayer_cli", "httpayer_cli.*"]
+
+[project.scripts]
+httpayer = "httpayer_cli.cli:cli"
+
+[project.optional-dependencies]
+ai = ["openai>=1.0.0"]
