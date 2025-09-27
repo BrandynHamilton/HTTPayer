@@ -1,7 +1,6 @@
 from httpayer import HTTPayerClient
 import click
 import json
-import jinja2
 import os
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -27,7 +26,12 @@ def call(method, url, headers, data, params):
     params = json.loads(params)
     client = HTTPayerClient()
     response = client.request(method, url, headers=headers, data=data, params=params)
-    click.echo(response)
+    response.raise_for_status()
+    click.echo("Response:")
+    try:
+        click.echo(json.dumps(response.json(), indent=4))
+    except json.JSONDecodeError:
+        click.echo(response.text)
 
 cli.add_command(call)
 
