@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "httpayer-cli"
+version = "0.1.0"
+description = "CLI for HTTPayer Usage"
+readme = "README.md"
+requires-python = ">=3.7"
+license = "MIT"
+dependencies = [
+    "httpayer>=0.1.2",
+]
