@@ -1,1 +1,0 @@
-Ghosts excel at hide-and-seek because they're always outstanding in their field.
