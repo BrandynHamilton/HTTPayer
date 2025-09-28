@@ -1,0 +1,7 @@
+{
+  "method": "POST",
+  "api_url": "https://nickeljoke.vercel.app/api/joke",
+  "headers": {},
+  "params": {},
+  "data": null
+}

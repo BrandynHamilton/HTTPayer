@@ -1,0 +1,22 @@
+steps:
+  - name: fetch_news
+    call:
+      method: GET
+      url: https://gloria.ai/news
+      params: { topic: "x402" }
+      format: json
+      output: news.json
+
+  - name: scrape_docs
+    call:
+      method: GET
+      url: https://firecrawl.io/scrape
+      params: { url: "https://coinbase.com/x402" }
+      format: json
+      output: docs.json
+
+  - name: summarize
+    ai:
+      prompt: "Summarize key differences and price points"
+      use: [fetch_news, scrape_docs]
+      out: summary.md

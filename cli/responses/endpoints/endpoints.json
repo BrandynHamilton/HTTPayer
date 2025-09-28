@@ -16,72 +16,6 @@
           "outputSchema": {
             "input": {
               "discoverable": true,
-              "method": "GET",
-              "type": "http"
-            }
-          },
-          "payTo": "0x08EAc4b35B68983783cF48D31FCBF6Feb5574475",
-          "resource": "https://x402-ai-starter-rho-sepia.vercel.app/api/add",
-          "scheme": "exact"
-        }
-      ],
-      "lastUpdated": "2025-09-27T04:41:45.296Z",
-      "metadata": {
-        "confidence": {
-          "overallScore": 0.82,
-          "performanceScore": 0.93,
-          "recencyScore": 1,
-          "reliabilityScore": 1,
-          "volumeScore": 0.2
-        },
-        "errorAnalysis": {
-          "abandonedFlows": 0,
-          "apiErrors": 0,
-          "delayedSettlements": 0,
-          "facilitatorErrors": 0,
-          "requestErrors": 0
-        },
-        "paymentAnalytics": {
-          "averageDailyTransactions": 0.5714285714285714,
-          "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e": 20000,
-          "totalTransactions": 4,
-          "totalUniqueUsers": 2,
-          "transactions24h": 1,
-          "transactionsMonth": 4,
-          "transactionsWeek": 4
-        },
-        "performance": {
-          "avgLatencyMs": 2688,
-          "maxLatencyMs": 3365,
-          "minLatencyMs": 1617,
-          "recentAvgLatencyMs": 2688
-        },
-        "reliability": {
-          "apiSuccessRate": 1,
-          "successfulSettlements": 4,
-          "totalRequests": 4
-        }
-      },
-      "resource": "https://x402-ai-starter-rho-sepia.vercel.app/api/add",
-      "type": "http",
-      "x402Version": 1
-    },
-    {
-      "accepts": [
-        {
-          "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-          "description": "Access to protected content",
-          "extra": {
-            "name": "USDC",
-            "version": "2"
-          },
-          "maxAmountRequired": "5000",
-          "maxTimeoutSeconds": 300,
-          "mimeType": "application/json",
-          "network": "base-sepolia",
-          "outputSchema": {
-            "input": {
-              "discoverable": true,
               "method": "POST",
               "type": "http"
             }
@@ -91,11 +25,77 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.292Z",
+      "lastUpdated": "2025-09-28T00:02:45.752Z",
       "metadata": {
         "confidence": {
-          "overallScore": 0.83,
+          "overallScore": 0.89,
           "performanceScore": 0.89,
+          "recencyScore": 1,
+          "reliabilityScore": 1,
+          "volumeScore": 0.6
+        },
+        "errorAnalysis": {
+          "abandonedFlows": 0,
+          "apiErrors": 0,
+          "delayedSettlements": 0,
+          "facilitatorErrors": 0,
+          "requestErrors": 0
+        },
+        "paymentAnalytics": {
+          "averageDailyTransactions": 3.5714285714285716,
+          "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e": 125000,
+          "totalTransactions": 25,
+          "totalUniqueUsers": 1,
+          "transactions24h": 2,
+          "transactionsMonth": 25,
+          "transactionsWeek": 25
+        },
+        "performance": {
+          "avgLatencyMs": 2138,
+          "maxLatencyMs": 3588,
+          "minLatencyMs": 1283,
+          "recentAvgLatencyMs": 2138
+        },
+        "reliability": {
+          "apiSuccessRate": 1,
+          "successfulSettlements": 25,
+          "totalRequests": 25
+        }
+      },
+      "resource": "https://x402-ai-starter.vercel.app/api/add",
+      "type": "http",
+      "x402Version": 1
+    },
+    {
+      "accepts": [
+        {
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "description": "",
+          "extra": {
+            "name": "USD Coin",
+            "version": "2"
+          },
+          "maxAmountRequired": "10000",
+          "maxTimeoutSeconds": 60,
+          "mimeType": "",
+          "network": "base",
+          "outputSchema": {
+            "input": {
+              "discoverable": true,
+              "method": "POST",
+              "type": "http"
+            }
+          },
+          "payTo": "0xf43F7a7b8370d28ECB6606636dc61c0470c4EC91",
+          "resource": "https://places-api.x402hub.xyz/api/places/text-search",
+          "scheme": "exact"
+        }
+      ],
+      "lastUpdated": "2025-09-28T00:02:45.748Z",
+      "metadata": {
+        "confidence": {
+          "overallScore": 0.85,
+          "performanceScore": 0.96,
           "recencyScore": 0.8,
           "reliabilityScore": 1,
           "volumeScore": 0.4
@@ -108,27 +108,98 @@
           "requestErrors": 0
         },
         "paymentAnalytics": {
-          "averageDailyTransactions": 3.2857142857142856,
-          "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e": 115000,
-          "totalTransactions": 23,
-          "totalUniqueUsers": 1,
-          "transactions24h": 3,
-          "transactionsMonth": 23,
-          "transactionsWeek": 23
+          "averageDailyTransactions": 1.4285714285714286,
+          "base:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": 100000,
+          "totalTransactions": 10,
+          "totalUniqueUsers": 3,
+          "transactions24h": 10,
+          "transactionsMonth": 10,
+          "transactionsWeek": 10
         },
         "performance": {
-          "avgLatencyMs": 2119,
-          "maxLatencyMs": 3588,
-          "minLatencyMs": 1283,
-          "recentAvgLatencyMs": 2119
+          "avgLatencyMs": 2947,
+          "maxLatencyMs": 3416,
+          "minLatencyMs": 2280,
+          "recentAvgLatencyMs": 2947
         },
         "reliability": {
           "apiSuccessRate": 1,
-          "successfulSettlements": 23,
-          "totalRequests": 23
+          "successfulSettlements": 10,
+          "totalRequests": 10
         }
       },
-      "resource": "https://x402-ai-starter.vercel.app/api/add",
+      "resource": "https://places-api.x402hub.xyz/api/places/text-search",
+      "type": "http",
+      "x402Version": 1
+    },
+    {
+      "accepts": [
+        {
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "description": "Daily remix video generation with profile picture",
+          "extra": {
+            "name": "USD Coin",
+            "version": "2"
+          },
+          "maxAmountRequired": "500000",
+          "maxTimeoutSeconds": 300,
+          "mimeType": "application/json",
+          "network": "base",
+          "outputSchema": {
+            "input": {
+              "bodyFields": {
+                "farcasterId": "number",
+                "pfpUrl": "string",
+                "walletAddress": "string"
+              },
+              "bodyType": "json",
+              "method": "POST",
+              "type": "http"
+            }
+          },
+          "payTo": "0x37ffc90BDb5B0c3aCF8beCCCe4AA7e7d74ab38Ba",
+          "resource": "https://www.remixme.xyz/api/generate/daily",
+          "scheme": "exact"
+        }
+      ],
+      "lastUpdated": "2025-09-28T00:02:45.745Z",
+      "metadata": {
+        "confidence": {
+          "overallScore": 0.62,
+          "performanceScore": 1,
+          "recencyScore": 0.8,
+          "reliabilityScore": 0.5,
+          "volumeScore": 0.2
+        },
+        "errorAnalysis": {
+          "abandonedFlows": 1,
+          "apiErrors": 0,
+          "delayedSettlements": 0,
+          "facilitatorErrors": 0,
+          "requestErrors": 0
+        },
+        "paymentAnalytics": {
+          "averageDailyTransactions": 0.14285714285714285,
+          "base:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913": 500000,
+          "totalTransactions": 1,
+          "totalUniqueUsers": 2,
+          "transactions24h": 1,
+          "transactionsMonth": 1,
+          "transactionsWeek": 1
+        },
+        "performance": {
+          "avgLatencyMs": 205094,
+          "maxLatencyMs": 205094,
+          "minLatencyMs": 205094,
+          "recentAvgLatencyMs": 205094
+        },
+        "reliability": {
+          "apiSuccessRate": 0.5,
+          "successfulSettlements": 1,
+          "totalRequests": 2
+        }
+      },
+      "resource": "https://www.remixme.xyz/api/generate/daily",
       "type": "http",
       "x402Version": 1
     },
@@ -156,12 +227,12 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.287Z",
+      "lastUpdated": "2025-09-28T00:02:45.741Z",
       "metadata": {
         "confidence": {
-          "overallScore": 0.81,
+          "overallScore": 0.79,
           "performanceScore": 0.97,
-          "recencyScore": 0.8,
+          "recencyScore": 0.6,
           "reliabilityScore": 1,
           "volumeScore": 0.2
         },
@@ -177,7 +248,7 @@
           "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e": 3000,
           "totalTransactions": 3,
           "totalUniqueUsers": 1,
-          "transactions24h": 1,
+          "transactions24h": 0,
           "transactionsMonth": 3,
           "transactionsWeek": 3
         },
@@ -222,7 +293,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.282Z",
+      "lastUpdated": "2025-09-28T00:02:45.737Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.8,
@@ -300,7 +371,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.277Z",
+      "lastUpdated": "2025-09-28T00:02:45.732Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.78,
@@ -425,7 +496,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.272Z",
+      "lastUpdated": "2025-09-28T00:02:45.728Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.78,
@@ -492,7 +563,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.267Z",
+      "lastUpdated": "2025-09-28T00:02:45.724Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.04,
@@ -640,7 +711,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.263Z",
+      "lastUpdated": "2025-09-28T00:02:45.72Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.76,
@@ -874,7 +945,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.257Z",
+      "lastUpdated": "2025-09-28T00:02:45.716Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.78,
@@ -945,7 +1016,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.252Z",
+      "lastUpdated": "2025-09-28T00:02:45.712Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.04,
@@ -989,76 +1060,6 @@
       "accepts": [
         {
           "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-          "description": "Daily remix video generation with profile picture",
-          "extra": {
-            "name": "USD Coin",
-            "version": "2"
-          },
-          "maxAmountRequired": "500000",
-          "maxTimeoutSeconds": 300,
-          "mimeType": "application/json",
-          "network": "base",
-          "outputSchema": {
-            "input": {
-              "bodyFields": {
-                "farcasterId": "number",
-                "pfpUrl": "string",
-                "walletAddress": "string"
-              },
-              "bodyType": "json",
-              "method": "POST",
-              "type": "http"
-            }
-          },
-          "payTo": "0x37ffc90BDb5B0c3aCF8beCCCe4AA7e7d74ab38Ba",
-          "resource": "https://www.remixme.xyz/api/generate/daily",
-          "scheme": "exact"
-        }
-      ],
-      "lastUpdated": "2025-09-27T04:41:45.247Z",
-      "metadata": {
-        "confidence": {
-          "overallScore": 0.04,
-          "performanceScore": 0,
-          "recencyScore": 0,
-          "reliabilityScore": 0,
-          "volumeScore": 0.2
-        },
-        "errorAnalysis": {
-          "abandonedFlows": 1,
-          "apiErrors": 0,
-          "delayedSettlements": 0,
-          "facilitatorErrors": 0,
-          "requestErrors": 0
-        },
-        "paymentAnalytics": {
-          "averageDailyTransactions": 0,
-          "totalTransactions": 0,
-          "totalUniqueUsers": 1,
-          "transactions24h": 0,
-          "transactionsMonth": 0,
-          "transactionsWeek": 0
-        },
-        "performance": {
-          "avgLatencyMs": 0,
-          "maxLatencyMs": 0,
-          "minLatencyMs": 0,
-          "recentAvgLatencyMs": 0
-        },
-        "reliability": {
-          "apiSuccessRate": 0,
-          "successfulSettlements": 0,
-          "totalRequests": 1
-        }
-      },
-      "resource": "https://www.remixme.xyz/api/generate/daily",
-      "type": "http",
-      "x402Version": 1
-    },
-    {
-      "accepts": [
-        {
-          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
           "description": "Custom remix video generation with profile picture",
           "extra": {
             "name": "USD Coin",
@@ -1086,7 +1087,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.243Z",
+      "lastUpdated": "2025-09-28T00:02:45.708Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.04,
@@ -1150,7 +1151,7 @@
           "scheme": "exact"
         }
       ],
-      "lastUpdated": "2025-09-27T04:41:45.238Z",
+      "lastUpdated": "2025-09-28T00:02:45.704Z",
       "metadata": {
         "confidence": {
           "overallScore": 0.78,
@@ -1188,6 +1189,72 @@
         }
       },
       "resource": "https://x402-demo-discovery-endpoint.vercel.app/protected",
+      "type": "http",
+      "x402Version": 1
+    },
+    {
+      "accepts": [
+        {
+          "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+          "description": "Access to protected content",
+          "extra": {
+            "name": "USDC",
+            "version": "2"
+          },
+          "maxAmountRequired": "5000",
+          "maxTimeoutSeconds": 300,
+          "mimeType": "application/json",
+          "network": "base-sepolia",
+          "outputSchema": {
+            "input": {
+              "discoverable": true,
+              "method": "POST",
+              "type": "http"
+            }
+          },
+          "payTo": "0x08EAc4b35B68983783cF48D31FCBF6Feb5574475",
+          "resource": "https://x402-ai-starter-rho-sepia.vercel.app/api/add",
+          "scheme": "exact"
+        }
+      ],
+      "lastUpdated": "2025-09-28T00:02:45.699Z",
+      "metadata": {
+        "confidence": {
+          "overallScore": 0.84,
+          "performanceScore": 0.93,
+          "recencyScore": 0.8,
+          "reliabilityScore": 1,
+          "volumeScore": 0.4
+        },
+        "errorAnalysis": {
+          "abandonedFlows": 0,
+          "apiErrors": 0,
+          "delayedSettlements": 0,
+          "facilitatorErrors": 0,
+          "requestErrors": 0
+        },
+        "paymentAnalytics": {
+          "averageDailyTransactions": 0.7142857142857143,
+          "base-sepolia:0x036CbD53842c5426634e7929541eC2318f3dCF7e": 25000,
+          "totalTransactions": 5,
+          "totalUniqueUsers": 3,
+          "transactions24h": 2,
+          "transactionsMonth": 5,
+          "transactionsWeek": 5
+        },
+        "performance": {
+          "avgLatencyMs": 2621,
+          "maxLatencyMs": 3365,
+          "minLatencyMs": 1617,
+          "recentAvgLatencyMs": 2621
+        },
+        "reliability": {
+          "apiSuccessRate": 1,
+          "successfulSettlements": 5,
+          "totalRequests": 5
+        }
+      },
+      "resource": "https://x402-ai-starter-rho-sepia.vercel.app/api/add",
       "type": "http",
       "x402Version": 1
     },
@@ -2322,7 +2389,7 @@
   "pagination": {
     "limit": 100,
     "offset": 0,
-    "total": 45
+    "total": 46
   },
   "x402Version": 1
 }

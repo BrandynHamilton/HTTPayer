@@ -34,3 +34,16 @@ Now httpayer should work globally.
 uv pip install -e ".[ai]" (editable)
 
 uv pip install ".[ai]" (non-editable)
+
+--
+
+httpayer ai draft "Get current weather for Austin using a cheap x402 endpoint" \
+  --max-price 10000 --network base --save calls/call_austin.json
+
+httpayer call --json-file calls/call_austin.json --open --format csv
+
+httpayer ai run "Scrape the Coinbase x402 docs and summarize key limits" \
+  --post summary --out results/docs_summary.md
+
+httpayer ai run "Scrape the Coinbase x402 docs and summarize key limits" \
+  --post summary --out results/docs_summary.md

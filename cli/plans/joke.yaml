@@ -1,0 +1,13 @@
+steps:
+  - name: get_joke
+    call:
+      method: POST
+      url: https://nickeljoke.vercel.app/api/joke
+      format: text
+      output: joke.txt
+
+  - name: summarize
+    ai:
+      prompt: "Fetch a joke and explain it in simple terms"
+      use: [get_joke]
+      out: joke_summary.md

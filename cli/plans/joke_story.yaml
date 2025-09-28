@@ -1,0 +1,14 @@
+steps:
+  - name: get_joke
+    call:
+      method: POST
+      url: https://nickeljoke.vercel.app/api/joke
+      format: text
+      output: joke.txt
+
+  - name: create_story
+    ai:
+      prompt: "Create a short story (500 > words) based on the following joke: {{ get_joke.output }}"
+      use: [get_joke]
+      mode: text
+      out: joke_story.md

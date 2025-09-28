@@ -24,4 +24,4 @@ include = ["httpayer_cli", "httpayer_cli.*"]
 httpayer = "httpayer_cli.cli:cli"
 
 [project.optional-dependencies]
-ai = ["openai>=1.0.0"]
+agent = ["openai>=1.0.0", "pyyaml>=6.0.0"]
