@@ -47,3 +47,5 @@ httpayer ai run "Scrape the Coinbase x402 docs and summarize key limits" \
 
 httpayer ai run "Scrape the Coinbase x402 docs and summarize key limits" \
   --post summary --out results/docs_summary.md
+
+httpayer agent explain responses/joke_*.txt responses/joke_story.md
